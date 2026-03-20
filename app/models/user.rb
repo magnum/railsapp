@@ -1,8 +1,9 @@
 class User < ApplicationRecord
+  include ApiKeyable
+  include Plannable
+
   rolify
   has_secure_password validations: false
-
-  has_many :plans, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: false

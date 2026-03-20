@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bearer: one
+  bearer_type: Bearer
+  common_token_prefix: MyString
+  random_token_prefix: MyString
+  token_digest: MyString
+  expires_at: 2026-03-20 16:30:27
+  revoked_at: 2026-03-20 16:30:27
+
+two:
+  bearer: two
+  bearer_type: Bearer
+  common_token_prefix: MyString
+  random_token_prefix: MyString
+  token_digest: MyString
+  expires_at: 2026-03-20 16:30:27
+  revoked_at: 2026-03-20 16:30:27

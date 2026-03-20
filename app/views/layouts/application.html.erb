@@ -37,7 +37,7 @@
           <%= render "shared/locale_select" %>
           <% if signed_in? %>
             <% if current_user.admin? %>
-              <%= link_to "Admin", admin_root_path, class: "text-base font-medium text-gray-700 hover:text-gray-900" %>
+              <%= link_to "Admin", admin_root_path, class: "hidden md:inline text-base font-medium text-gray-700 hover:text-gray-900" %>
             <% end %>
             <div class="flex items-center gap-2">
               <% if current_user.google_connected? && current_user.avatar_url.present? %>

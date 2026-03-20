@@ -9,6 +9,7 @@ class UserDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    api_keys: Field::HasMany,
     avatar_url: Field::String,
     email: Field::String,
     firstname: Field::String,
@@ -33,6 +34,7 @@ class UserDashboard < Administrate::BaseDashboard
     lastname
     roles
     plans
+    api_keys
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -47,6 +49,7 @@ class UserDashboard < Administrate::BaseDashboard
     uid
     roles
     plans
+    api_keys
     created_at
     updated_at
   ].freeze

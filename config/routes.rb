@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users
     resources :roles
+    resources :api_keys
     resources :plan_types
     resources :plans
     resources :invitations do
@@ -19,24 +20,39 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  concern :apiable do
+    get "test", to: "test#index"
+    # resources :documents, only: [:index, :show, :create]
+  end
 
-  # Invitation consume: GET /invitations/consume or GET /invitations/consume/:code (pre-filled)
-  get "invitations/consume", to: "invitations#consume", as: :invitation_consume
-  get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
-  post "invitations/consume", to: "invitations#consume"
 
-  # Authentication
-  get "sign_in", to: "sessions#new", as: :sign_in
-  post "sign_in", to: "sessions#create"
-  delete "sign_out", to: "sessions#destroy", as: :sign_out
-  get "auth/failure", to: "sessions#failure"
-  get "auth/:provider/callback", to: "sessions#create"
+  scope "/(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
+    # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
+    # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+    # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  get "sign_up", to: "registrations#new", as: :sign_up
-  post "sign_up", to: "registrations#create"
+    # Invitation consume: GET /invitations/consume or GET /invitations/consume/:code (pre-filled)
+    get "invitations/consume", to: "invitations#consume", as: :invitation_consume
+    get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
+    post "invitations/consume", to: "invitations#consume"
+
+    # Authentication
+    get "sign_in", to: "sessions#new", as: :sign_in
+    post "sign_in", to: "sessions#create"
+    delete "sign_out", to: "sessions#destroy", as: :sign_out
+    get "auth/failure", to: "sessions#failure"
+    get "auth/:provider/callback", to: "sessions#create"
+
+    get "sign_up", to: "registrations#new", as: :sign_up
+    post "sign_up", to: "registrations#create"
+
+    namespace :api do
+      concerns :apiable
+      namespace :v1 do
+        concerns :apiable
+      end
+    end
+  end
 
   get "set_session_locale/:locale", to: "locale#set_session_locale", as: :set_session_locale
 
