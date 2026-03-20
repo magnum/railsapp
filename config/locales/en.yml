@@ -37,6 +37,8 @@ en:
   views:
     common:
       or: "Or"
+    errors:
+      fix_errors: "Please fix the following errors:"
     invitations:
       consume_title: "Enter invitation code"
       consume_intro: "Enter your invitation code to create an account."

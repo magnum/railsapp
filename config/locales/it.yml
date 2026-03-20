@@ -8,6 +8,8 @@ it:
   views:
     common:
       or: "Oppure"
+    errors:
+      fix_errors: "Correggi i seguenti errori:"
     invitations:
       consume_title: "Inserisci il codice invito"
       consume_intro: "Inserisci il tuo codice invito per creare un account."

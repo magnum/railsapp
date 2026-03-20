@@ -4,18 +4,7 @@
   </h1>
 
   <%= form_with model: @user, url: sign_up_path, method: :post, local: true, class: "space-y-4" do |f| %>
-    <% if @user.errors.any? %>
-      <div class="rounded-md bg-red-50 border border-red-200 p-4">
-        <h2 class="text-base font-medium text-red-800">
-          <%= t("registrations.errors_prohibited", count: @user.errors.count) %>
-        </h2>
-        <ul class="mt-2 list-disc list-inside text-base text-red-700">
-          <% @user.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render "shared/error_messages", object: @user %>
 
     <div>
       <%= f.label :firstname, t("registrations.firstname"), class: "block text-base font-medium text-gray-700 mb-1" %>
