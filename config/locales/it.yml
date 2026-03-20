@@ -40,12 +40,39 @@ it:
     no_account: "Non hai un account?"
 
   activerecord:
+    attributes:
+      user:
+        id: "ID"
+        firstname: "Nome"
+        lastname: "Cognome"
+        email: "Email"
+        created_at: "Creato il"
+        updated_at: "Aggiornato il"
     errors:
       models:
         invitation:
           attributes:
             valid_to:
               valid_to_after_valid_from: "deve essere successivo a 'Valido da'"
+
+  common:
+    cancel: "Annulla"
+
+  users:
+    index:
+      title: "Utenti"
+      no_users_found: "Nessun utente trovato."
+    show:
+      title: "Profilo"
+      back_to_list: "Torna all'elenco"
+      back_to_home: "Torna alla home"
+    edit:
+      title: "Modifica profilo"
+      submit: "Aggiorna"
+    actions:
+      show: "Visualizza"
+      edit: "Modifica"
+    updated: "Profilo aggiornato con successo."
 
   registrations:
     sign_up: "Registrati"

@@ -38,13 +38,12 @@
           <% if signed_in? %>
             <% if current_user.admin? %>
               <%= link_to "Admin", admin_root_path, class: "hidden md:inline text-base font-medium text-gray-700 hover:text-gray-900" %>
+              <%= link_to t("users.index.title"), users_path, class: "hidden md:inline text-base font-medium text-gray-700 hover:text-gray-900" %>
             <% end %>
-            <div class="flex items-center gap-2">
-              <% if current_user.google_connected? && current_user.avatar_url.present? %>
-                <%= image_tag current_user.avatar_url, alt: current_user.full_name, class: "w-8 h-8 rounded-full object-cover", loading: "lazy", referrerpolicy: "no-referrer" %>
-              <% end %>
+            <%= link_to user_path(current_user), class: "flex items-center gap-2" do %>
+              <%= render "users/avatar", user: current_user %>
               <span class="hidden sm:inline text-base text-gray-600"><%= current_user.email %></span>
-            </div>
+            <% end %>
             <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: "text-base font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline" %>
           <% else %>
             <%= link_to t("sessions.sign_in"), sign_in_path, class: "btn-default" %>

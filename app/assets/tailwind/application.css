@@ -79,3 +79,7 @@ body {
     color: #fff !important;
   }
 }
+
+.list-label {
+  @apply text-sm font-medium text-gray-500 uppercase tracking-wider md:hidden;
+}

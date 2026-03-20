@@ -6,7 +6,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    admin?
+    user.present? && (admin? || record == user)
   end
 
   def create?
@@ -18,7 +18,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    admin?
+    user.present? && (admin? || record == user)
+  end
+
+  def edit?
+    update?
   end
 
   def destroy?
