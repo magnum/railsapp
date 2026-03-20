@@ -72,12 +72,22 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "administrate", github: "thoughtbot/administrate", tag: "v1.0.0.beta3"
-gem "administrate-field-aasm"
-gem "administrate-field-active_storage"
+gem "pundit"
 gem "rolify"
-gem "ruby_llm"
 gem "aasm"
 gem "config"
+
+gem "administrate", github: "thoughtbot/administrate", tag: "v1.0.0.beta3"
+gem "administrate-field-active_storage"
+gem 'administrate-field-aasm'
+#gem 'administrate-rich-text'
+# local gems
+#gem "administrate-field-nested_has_many", path: "../administrate-field-nested_has_many"
+gem "administrate-field-nested_has_many", github: "magnum/administrate-field-nested_has_many"
+#gem 'administrate-field-acts_as_taggable', path: "../administrate-field-acts_as_taggable"
+gem 'administrate-field-acts_as_taggable', github: "magnum/administrate-field-acts_as_taggable"
+
+
+gem "ruby_llm"
 gem "mission_control-jobs"
 gem "heroicon"

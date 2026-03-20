@@ -34,6 +34,10 @@ en:
     welcome: "Welcome to your application."
     sign_in_prompt: "Sign in or create an account to continue."
 
+  views:
+    auth:
+      not_authorized: "You are not authorized to access this area."
+
   authentication:
     require_sign_in: "You must be signed in to continue."
     already_signed_in: "You are already signed in."

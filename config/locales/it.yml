@@ -5,6 +5,10 @@ it:
     welcome: "Benvenuto nella tua applicazione."
     sign_in_prompt: "Accedi o crea un account per continuare."
 
+  views:
+    auth:
+      not_authorized: "Non sei autorizzato ad accedere a quest'area."
+
   authentication:
     require_sign_in: "Devi effettuare l'accesso per continuare."
     already_signed_in: "Sei già connesso."

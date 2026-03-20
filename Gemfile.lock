@@ -1,4 +1,20 @@
 GIT
+  remote: https://github.com/magnum/administrate-field-acts_as_taggable.git
+  revision: df5817fca96cb577e40a45dc43bb2dda2744f21c
+  specs:
+    administrate-field-acts_as_taggable (0.0.4)
+      acts-as-taggable-on (>= 6.0)
+      administrate (< 1.0.0)
+
+GIT
+  remote: https://github.com/magnum/administrate-field-nested_has_many.git
+  revision: 8bef45870c69c81cba39019c906427e8df39145f
+  specs:
+    administrate-field-nested_has_many (2.1.0)
+      administrate (>= 0.19, < 1)
+      cocoon (~> 1.2, >= 1.2.11)
+
+GIT
   remote: https://github.com/thoughtbot/administrate.git
   revision: 4b95b26807778dffcf5cd1a46d5bdf6a1f482be9
   tag: v1.0.0.beta3
@@ -88,6 +104,9 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    acts-as-taggable-on (13.0.0)
+      activerecord (>= 7.1, < 8.2)
+      zeitwerk (>= 2.4, < 3.0)
     addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
     administrate-field-aasm (0.1.3)
@@ -121,6 +140,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    cocoon (1.2.15)
     concurrent-ruby (1.3.6)
     config (5.6.1)
       deep_merge (~> 1.2, >= 1.2.1)
@@ -333,6 +353,8 @@ GEM
     public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
+    pundit (2.5.2)
+      activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.5)
@@ -528,6 +550,8 @@ DEPENDENCIES
   administrate!
   administrate-field-aasm
   administrate-field-active_storage
+  administrate-field-acts_as_taggable!
+  administrate-field-nested_has_many!
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
@@ -547,6 +571,7 @@ DEPENDENCIES
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
+  pundit
   rails (~> 8.1.2)
   rolify
   rubocop-rails-omakase
@@ -576,10 +601,13 @@ CHECKSUMS
   activerecord (8.1.2) sha256=acfbe0cadfcc50fa208011fe6f4eb01cae682ebae0ef57145ba45380c74bcc44
   activestorage (8.1.2) sha256=8a63a48c3999caeee26a59441f813f94681fc35cc41aba7ce1f836add04fba76
   activesupport (8.1.2) sha256=88842578ccd0d40f658289b0e8c842acfe9af751afee2e0744a7873f50b6fdae
+  acts-as-taggable-on (13.0.0) sha256=dca776c6ddebc458d175b57554ad692488e283f27047117e01ed871f1cba6135
   addressable (2.8.9) sha256=cc154fcbe689711808a43601dee7b980238ce54368d23e127421753e46895485
   administrate (1.0.0.beta3)
   administrate-field-aasm (0.1.3) sha256=3a85fcd174a09554e72bb1449b6620570de2a2b03eb00780507113687558e5de
   administrate-field-active_storage (1.0.6) sha256=44b173b1eff17ca736034ff031bf625368060b27e2392fe0a09847c06c402b2a
+  administrate-field-acts_as_taggable (0.0.4)
+  administrate-field-nested_has_many (2.1.0)
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   bcrypt (3.1.21) sha256=5964613d750a42c7ee5dc61f7b9336fb6caca429ba4ac9f2011609946e4a2dcf
@@ -593,6 +621,7 @@ CHECKSUMS
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   bundler-audit (0.9.3) sha256=81c8766c71e47d0d28a0f98c7eed028539f21a6ea3cd8f685eb6f42333c9b4e9
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
+  cocoon (1.2.15) sha256=d08f14e69653287d7a060ee43389b8c824e55191dffbca0c5c586f38ef491f0d
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
   config (5.6.1) sha256=a9f0f0f9ffa6d12d43147a3fa1ab8486fe484c3098a350c6a2e0f32430e0d1cc
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
@@ -691,6 +720,7 @@ CHECKSUMS
   psych (5.3.1) sha256=eb7a57cef10c9d70173ff74e739d843ac3b2c019a003de48447b2963d81b1974
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
   puma (7.2.0) sha256=bf8ef4ab514a4e6d4554cb4326b2004eba5036ae05cf765cfe51aba9706a72a8
+  pundit (2.5.2) sha256=e374152baa24f90b630428293faf4b4c5468fc3cc010165f7d8fcb44ce108bbd
   raabro (1.4.0) sha256=d4fa9ff5172391edb92b242eed8be802d1934b1464061ae5e70d80962c5da882
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.5) sha256=4cbd0974c0b79f7a139b4812004a62e4c60b145cba76422e288ee670601ed6d3

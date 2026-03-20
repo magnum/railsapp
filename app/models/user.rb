@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  rolify
   has_secure_password validations: false
 
   validates :email, presence: true, uniqueness: true
@@ -26,6 +27,10 @@ class User < ApplicationRecord
 
   def full_name
     "#{firstname} #{lastname}".strip
+  end
+
+  def admin?
+    has_role?(:admin)
   end
 
   private
