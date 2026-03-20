@@ -30,6 +30,10 @@
 en:
   hello: "Hello"
 
+  home:
+    welcome: "Welcome to your application."
+    sign_in_prompt: "Sign in or create an account to continue."
+
   authentication:
     require_sign_in: "You must be signed in to continue."
     already_signed_in: "You are already signed in."
@@ -41,6 +45,9 @@ en:
     signed_out: "Signed out successfully."
     invalid_credentials: "Invalid email or password."
     oauth_failure: "Authentication with Google failed."
+    or_continue: "Or continue with"
+    connect_google: "Connect with Google"
+    no_account: "Don't have an account?"
 
   registrations:
     sign_up: "Sign up"
@@ -50,3 +57,10 @@ en:
     email: "Email"
     password: "Password"
     password_confirmation: "Confirm password"
+    or_continue: "Or continue with"
+    connect_google: "Connect with Google"
+    no_account: "Don't have an account?"
+    has_account: "Already have an account?"
+    errors_prohibited:
+      one: "1 error prohibited this account from being saved:"
+      other: "%{count} errors prohibited this account from being saved:"

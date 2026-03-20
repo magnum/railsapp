@@ -1,0 +1,36 @@
+it:
+  hello: "Ciao"
+
+  home:
+    welcome: "Benvenuto nella tua applicazione."
+    sign_in_prompt: "Accedi o crea un account per continuare."
+
+  authentication:
+    require_sign_in: "Devi effettuare l'accesso per continuare."
+    already_signed_in: "Sei già connesso."
+
+  sessions:
+    sign_in: "Accedi"
+    sign_out: "Esci"
+    signed_in: "Accesso effettuato con successo."
+    signed_out: "Disconnessione effettuata."
+    invalid_credentials: "Email o password non validi."
+    oauth_failure: "Autenticazione con Google fallita."
+    or_continue: "Oppure continua con"
+    connect_google: "Connetti con Google"
+    no_account: "Non hai un account?"
+
+  registrations:
+    sign_up: "Registrati"
+    created: "Account creato con successo."
+    firstname: "Nome"
+    lastname: "Cognome"
+    email: "Email"
+    password: "Password"
+    password_confirmation: "Conferma password"
+    or_continue: "Oppure continua con"
+    connect_google: "Connetti con Google"
+    has_account: "Hai già un account?"
+    errors_prohibited:
+      one: "1 errore ha impedito il salvataggio dell'account:"
+      other: "%{count} errori hanno impedito il salvataggio dell'account:"

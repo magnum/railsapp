@@ -19,5 +19,7 @@ Rails.application.routes.draw do
   get "sign_up", to: "registrations#new", as: :sign_up
   post "sign_up", to: "registrations#create"
 
+  get "set_session_locale/:locale", to: "locale#set_session_locale", as: :set_session_locale
+
   root "home#index"
 end
