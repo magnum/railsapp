@@ -27,7 +27,7 @@ as defined by the routes in the `admin/` namespace
       <%= link_to locale.upcase, 
         set_session_locale_path(locale: locale), 
         class: "hover:text-blue-700 hover:underline #{I18n.locale == locale ? 'font-bold' : ''}", 
-        data: { turbo_prefetch: false }
+        data: { turbo_prefetch: false,turbo: false }
       %>
     <% end %>
   </div>
