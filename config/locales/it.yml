@@ -1,6 +1,18 @@
 it:
   hello: "Ciao"
 
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d %B %Y"
+      short: "%d %b"
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      long: "%d %B %Y %H:%M"
+      short: "%d %b %H:%M"
+
   home:
     welcome: "Benvenuto nella tua applicazione."
     sign_in_prompt: "Accedi o crea un account per continuare."

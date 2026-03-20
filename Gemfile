@@ -76,6 +76,7 @@ gem "pundit"
 gem "rolify"
 gem "aasm"
 gem "config"
+gem 'rails-i18n', github: 'svenfuchs/rails-i18n', branch: 'master'
 
 gem "administrate", github: "thoughtbot/administrate", tag: "v1.0.0.beta3"
 gem "administrate-field-active_storage"
@@ -90,4 +91,5 @@ gem 'administrate-field-acts_as_taggable', github: "magnum/administrate-field-ac
 
 gem "ruby_llm"
 gem "mission_control-jobs"
+
 gem "heroicon"

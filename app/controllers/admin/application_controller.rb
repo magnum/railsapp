@@ -6,6 +6,7 @@
 # you're free to overwrite the RESTful controller actions.
 module Admin
   class ApplicationController < Administrate::ApplicationController
+    include WithLocale
     helper ApplicationHelper
     helper Heroicon::ApplicationHelper
 
