@@ -28,4 +28,25 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  hello: "Hello"
+
+  authentication:
+    require_sign_in: "You must be signed in to continue."
+    already_signed_in: "You are already signed in."
+
+  sessions:
+    sign_in: "Sign in"
+    sign_out: "Sign out"
+    signed_in: "Signed in successfully."
+    signed_out: "Signed out successfully."
+    invalid_credentials: "Invalid email or password."
+    oauth_failure: "Authentication with Google failed."
+
+  registrations:
+    sign_up: "Sign up"
+    created: "Account created successfully."
+    firstname: "First name"
+    lastname: "Last name"
+    email: "Email"
+    password: "Password"
+    password_confirmation: "Confirm password"

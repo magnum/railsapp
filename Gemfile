@@ -20,7 +20,12 @@ gem "tailwindcss-rails"
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
+
+# OmniAuth for Google OAuth
+gem "omniauth", "~> 2.1"
+gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -66,3 +71,13 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "administrate", github: "thoughtbot/administrate", tag: "v1.0.0.beta3"
+gem "administrate-field-aasm"
+gem "administrate-field-active_storage"
+gem "rolify"
+gem "ruby_llm"
+gem "aasm"
+gem "config"
+gem "mission_control-jobs"
+gem "heroicon"
