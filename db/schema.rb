@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_20_151124) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_152030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_151124) do
     t.index ["code"], name: "index_invitations_on_code", unique: true
     t.index ["signature"], name: "index_invitations_on_signature", unique: true
     t.index ["state"], name: "index_invitations_on_state"
+  end
+
+  create_table "plan_types", force: :cascade do |t|
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.integer "days"
+    t.text "description"
+    t.boolean "is_active"
+    t.boolean "is_default"
+    t.string "name"
+    t.decimal "price", precision: 10, scale: 2
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_plan_types_on_code", unique: true
+  end
+
+  create_table "plans", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "plan_type_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.date "valid_from"
+    t.date "valid_to"
+    t.index ["plan_type_id"], name: "index_plans_on_plan_type_id"
+    t.index ["user_id"], name: "index_plans_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -59,4 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_151124) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
+
+  add_foreign_key "plans", "plan_types"
+  add_foreign_key "plans", "users"
 end

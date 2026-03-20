@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users
     resources :roles
+    resources :plan_types
+    resources :plans
     resources :invitations do
       member do
         put "/event/:event", to: "invitations#event", as: :event

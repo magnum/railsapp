@@ -2,12 +2,16 @@ class User < ApplicationRecord
   rolify
   has_secure_password validations: false
 
+  has_many :plans, dependent: :destroy
+
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: false
   validates :firstname, :lastname, presence: true
   validates :password, length: { minimum: 8 }, allow_nil: true
   validate :password_or_oauth
   validate :password_confirmation_match, if: -> { password.present? }
+
+  after_create :create_default_plan
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
@@ -31,6 +35,18 @@ class User < ApplicationRecord
 
   def admin?
     has_role?(:admin)
+  end
+
+  def create_default_plan
+    plan_type = PlanType.find_by(code: "basic")
+    return unless plan_type
+
+    Plan.create!(
+      plan_type: plan_type,
+      user: self,
+      valid_from: Date.current,
+      valid_to: Date.current + 365.days
+    )
   end
 
   private
