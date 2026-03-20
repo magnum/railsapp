@@ -19,7 +19,7 @@ bin/rails db:prepare
 ## deploy
 in `deploy.yml`  
 set the `ip address` accorgingly to your server's one  
-set `DB_HOST`  
+set `POSTGRES_HOST`  
 set `proxy.host` 
 pay ATTENTION to user a not occupied port to expose it from, ie `5435` and set db accessory like this
 ```

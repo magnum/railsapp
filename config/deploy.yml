@@ -60,7 +60,8 @@ env:
 
     # Match this to any external database server to configure Active Record correctly
     # Use railsapp-db for a db accessory server on same machine via local kamal docker network.
-    DB_HOST: railsapp-db
+    POSTGRES_HOST: railsapp-db
+    POSTGRES_PASSWORD: <%= ENV["POSTGRES_PASSWORD"] %>
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug

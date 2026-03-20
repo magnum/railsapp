@@ -101,7 +101,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    host: <%= ENV["DB_HOST"] %>
+    host: <%= ENV["POSTGRES_HOST"] %>
     database: railsapp_production
     username: railsapp
     password: <%= ENV["POSTGRES_PASSWORD"] %>
