@@ -131,6 +131,8 @@ accessories:
     host: 159.69.196.166
     port: "127.0.0.1:5435:5432"
     env:
+      clear:
+        POSTGRES_USER: railsapp
       secret:
         - POSTGRES_PASSWORD
     directories:
