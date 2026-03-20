@@ -40,6 +40,10 @@
     <%= f.submit t("registrations.sign_up"), class: "btn-primary w-full" %>
   <% end %>
 
+  <div class="mt-6">
+    <%= render "shared/invitation_link" %>
+  </div>
+
   <% if google_oauth_configured? %>
     <div class="mt-6">
       <div class="relative">

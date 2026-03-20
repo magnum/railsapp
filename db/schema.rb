@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_20_144812) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_151124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "code", null: false
+    t.datetime "consumed_at"
+    t.datetime "created_at", null: false
+    t.string "signature", null: false
+    t.string "state", default: "created", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "valid_from", null: false
+    t.datetime "valid_to", null: false
+    t.index ["code"], name: "index_invitations_on_code", unique: true
+    t.index ["signature"], name: "index_invitations_on_signature", unique: true
+    t.index ["state"], name: "index_invitations_on_state"
+  end
 
   create_table "roles", force: :cascade do |t|
     t.datetime "created_at", null: false

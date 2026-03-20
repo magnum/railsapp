@@ -2,6 +2,7 @@
 
 class SessionsController < ApplicationController
   include Authentication
+  include InvitationProtected
 
   before_action :redirect_if_signed_in, only: [:new, :create]
 
@@ -28,8 +29,22 @@ class SessionsController < ApplicationController
   private
 
   def create_from_oauth
-    user = User.from_omniauth(request.env["omniauth.auth"])
+    auth = request.env["omniauth.auth"]
+    existing_user = User.find_by(provider: auth.provider, uid: auth.uid)
+
+    if existing_user.nil?
+      invitation = current_invitation
+      unless invitation&.consumable?
+        redirect_to root_path, alert: t("views.invitations.requires_invitation") and return
+      end
+    end
+
+    user = User.from_omniauth(auth)
     session[:user_id] = user.id
+
+    invitation = current_invitation
+    invitation.consume! if invitation&.may_consume? && existing_user.nil?
+
     redirect_to root_path, notice: t("sessions.signed_in")
   end
 

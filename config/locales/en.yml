@@ -35,8 +35,24 @@ en:
     sign_in_prompt: "Sign in or create an account to continue."
 
   views:
+    common:
+      or: "Or"
+    invitations:
+      consume_title: "Enter invitation code"
+      consume_intro: "Enter your invitation code to create an account."
+      invitation_code: "Invitation code"
+      invitation_code_placeholder: "e.g. abc123"
+      continue_to_sign_up: "Continue to sign up"
+      use_invitation_code: "Use invitation code"
+      invitation_accepted: "Invitation accepted. You can now create your account."
+      invitation_invalid: "Invalid or expired invitation code."
+      requires_invitation: "You need a valid invitation to sign up."
+      back_to_home: "Back to home"
     auth:
       not_authorized: "You are not authorized to access this area."
+    admin:
+      event_success: "%{event} completed successfully."
+      event_fail: "%{event} failed: %{message}"
 
   authentication:
     require_sign_in: "You must be signed in to continue."
@@ -52,6 +68,14 @@ en:
     or_continue: "Or continue with"
     connect_google: "Connect with Google"
     no_account: "Don't have an account?"
+
+  activerecord:
+    errors:
+      models:
+        invitation:
+          attributes:
+            valid_to:
+              valid_to_after_valid_from: "must be after valid from"
 
   registrations:
     sign_up: "Sign up"

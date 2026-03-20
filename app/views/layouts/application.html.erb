@@ -48,7 +48,7 @@
             <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: "text-base font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline" %>
           <% else %>
             <%= link_to t("sessions.sign_in"), sign_in_path, class: "btn-default" %>
-            <%= link_to t("registrations.sign_up"), sign_up_path, class: "btn-primary" %>
+            <%= link_to t("views.invitations.use_invitation_code"), invitation_consume_path, class: "btn-primary" %>
           <% end %>
         </div>
       </nav>

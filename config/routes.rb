@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users
     resources :roles
+    resources :invitations do
+      member do
+        put "/event/:event", to: "invitations#event", as: :event
+      end
+    end
     root to: "users#index"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -15,6 +20,11 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+
+  # Invitation consume: GET /invitations/consume or GET /invitations/consume/:code (pre-filled)
+  get "invitations/consume", to: "invitations#consume", as: :invitation_consume
+  get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
+  post "invitations/consume", to: "invitations#consume"
 
   # Authentication
   get "sign_in", to: "sessions#new", as: :sign_in

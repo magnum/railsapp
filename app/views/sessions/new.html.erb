@@ -45,6 +45,10 @@
     </div>
   <% end %>
 
+  <div class="mt-6">
+    <%= render "shared/invitation_link" %>
+  </div>
+
   <p class="mt-6 text-center text-base text-gray-600">
     <%= t("sessions.no_account") %>
     <%= link_to t("registrations.sign_up"), sign_up_path, class: "font-medium text-gray-900 hover:text-gray-700" %>
