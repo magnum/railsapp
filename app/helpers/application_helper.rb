@@ -1,7 +1,7 @@
 module ApplicationHelper
   def google_oauth_configured?
-    Rails.application.credentials.dig(:oauth, :google, :client_id).present? &&
-      Rails.application.credentials.dig(:oauth, :google, :client_secret).present?
+    ENV["GOOGLE_CLIENT_ID"].present? &&
+      ENV["GOOGLE_CLIENT_SECRET"].present?
   end
 
   def state_bg_color(state)

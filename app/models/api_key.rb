@@ -4,7 +4,7 @@ class ApiKey < ApplicationRecord
   # https://therailsrunner.com/guide-to-building-public-facing-api-with-ruby-on-rails/
   # ApiKey.create(bearer: user).raw_token
 
-  HMAC_SECRET_KEY = Rails.application.credentials.dig(:api_key_hmac_secret_key).presence || Rails.application.secret_key_base
+  HMAC_SECRET_KEY = ENV["API_KEY_HMAC_SECRET_KEY"]
   TOKEN_NAMESPACE = "tkn"
 
   belongs_to :bearer, polymorphic: true
