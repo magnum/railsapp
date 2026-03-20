@@ -104,7 +104,7 @@ production:
     host: <%= ENV["DB_HOST"] %>
     database: railsapp_production
     username: railsapp
-    password: <%= ENV["RAILSAPP_DATABASE_PASSWORD"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: railsapp_production_cache
