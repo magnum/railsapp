@@ -132,9 +132,10 @@ accessories:
     port: "127.0.0.1:5435:5432"
     env:
       clear:
-        POSTGRES_USER: railsapp
+        #POSTGRES_USER: railsapp
+        POSTGRES_DB: railsapp_production
       secret:
         - POSTGRES_PASSWORD
     directories:
-      - /data/postgresql/data:/var/lib/postgresql/data
+      - /data/railsapp/postgresql/data:/var/lib/postgresql/data
       - /data/railsapp:/data
