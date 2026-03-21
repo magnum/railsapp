@@ -101,9 +101,9 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    host: <%= ENV["POSTGRES_HOST"] %>
+    host: railsapp-db
     database: railsapp_production
-    username: railsapp
+    username: postgres
     password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
