@@ -1,2 +1,2 @@
-class Api::V1::TestController < Api::V1::TestController
+class Api::V1::TestController < Api::TestController
 end
