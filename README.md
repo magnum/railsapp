@@ -63,6 +63,45 @@ kamal deploy
 ```
 
 
+## Commands
+
+### db:remote_pull
+
+Copies the production PostgreSQL databases from the Kamal server into your local environment (development only). By default it syncs **primary, cache, queue, and cable**. It runs `pg_dump` inside the Postgres container over SSH, saves dumps under `tmp/db_remote_sync/`, then drops and recreates the matching local databases and runs `pg_restore`.
+
+**Prerequisites:** `ssh` to the server (key-based auth), and local `psql` / `pg_restore` on your PATH.
+
+**Defaults from `config/deploy.yml`:** if you omit env overrides, the task reads `accessories.db.host` for SSH (`root@<host>`) and `env.clear.POSTGRES_HOST` for the Docker container name (else `<service>-db`, else `railsapp-db`).
+
+**Optional environment variables:**
+
+| Variable | Purpose |
+|----------|---------|
+| `DB_SYNC_PRIMARY_ONLY=1` | Sync only the primary database (skip cache, queue, cable) |
+| `REMOTE_DB_SSH` | Full SSH target (e.g. `deploy@example.com`) instead of `root@<accessories.db.host>` |
+| `REMOTE_PG_CONTAINER` | Docker container name for `docker exec` instead of the value derived from deploy |
+| `REMOTE_PG_USER` | Postgres user for `pg_dump` (default `postgres`) |
+| `REMOTE_POSTGRES_PASSWORD` | Only if `pg_hba` inside the container requires a password for local connections |
+
+**Safety:** you must type `yes` (any case) after a summary that lists SSH target, container, user, and local DB names to be overwritten. There is no non-interactive bypass.
+
+**Examples:**
+
+```sh
+bin/rails db:remote_pull
+```
+
+With explicit overrides (only when you need them):
+
+```sh
+DB_SYNC_PRIMARY_ONLY=1 bin/rails db:remote_pull
+REMOTE_DB_SSH=ubuntu@203.0.113.10 bin/rails db:remote_pull
+REMOTE_PG_USER=railsapp REMOTE_PG_CONTAINER=railsapp-db REMOTE_DB_SSH=root@203.0.113.10 bin/rails db:remote_pull
+```
+
+After a pull, run `bin/rails db:migrate` if your local schema should differ from production.
+
+
 ## Api 
 
 ### generate api key for a user in rails console
