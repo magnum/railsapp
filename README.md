@@ -7,6 +7,7 @@ This template is intended for use as a starting point for new Rails applications
 - we use different dbs for solid cache, cable and queue
 - a default worker is run on the same machine, jobs are not run via web process, `SOLID_QUEUE_IN_PUMA` is set to `false`
 - a `data` directoy will be use to persist postgres data and attachments
+- **Rails storage (Active Storage, etc.):** in `config/deploy.yml`, set `volumes` to map a **host directory** to `/rails/storage` inside the app container (default example: `/data/railsapp/storage:/rails/storage`). That path persists uploaded files and other on-disk storage across container replacements; create the host folder on the server (e.g. `mkdir -p /data/railsapp/storage`) and prefer a mounted or backed-up volume when possible
 - some secrets are stored on 1password, **remember** that secrets has to be set in `.kamal/secrets` and named in `env.secret` in `config/deploy.yml` too.
 
 
@@ -25,6 +26,8 @@ Create a "data" directory on remote server, login via ssh and execute something 
 ```
 dir=/data/railsapp/postgresql/data/ ; rm -fr $dir ; mkdir -p $dir
 ```
+
+Ensure the **host path** used in `volumes` for app storage exists too (must match `config/deploy.yml`, e.g. `mkdir -p /data/railsapp/storage`).
 
 In `config/deploy.yml` verify **accessory** parameters: Supposedly, you shouldn't change anything except for the app name prefix in `POSTGRES_DB`, the `ip address` and the `port`
 ```
