@@ -20,6 +20,33 @@ Set `POSTGRES_PASSWORD` in `.kamal/secrets` and eventually add any other secret 
 In `config/deploy.yml` set the `ip address` and  `proxy.host` accorgingly to yours; 
 
 
+## Google OAuth
+
+Sign-in uses [omniauth-google-oauth2](https://github.com/zquestz/omniauth-google-oauth2). Create OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/apis/credentials) (APIs & Services → Credentials → Create credentials → OAuth client ID → Web application).
+
+Replace the host below with your production domain (same as `proxy.host` in `config/deploy.yml`). Keep `http://localhost:3000` for local development.
+
+**Authorized JavaScript origins**
+
+```
+http://localhost:3000
+https://railsapp.m6i.it
+```
+
+**Authorized redirect URIs**
+
+```
+http://localhost:3000/auth/google_oauth2/callback
+https://railsapp.m6i.it/auth/google_oauth2/callback
+```
+
+Set the client ID and secret in the environment:
+
+- **Local:** `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (e.g. in `.env` or your shell)
+- **Production:** add both to `.kamal/secrets` and list them under `env.secret` in `config/deploy.yml` (already wired in this template)
+
+The login UI appears only when both variables are present (`google_oauth_configured?`).
+
 
 ## Setup
 Create a "data" directory on remote server, login via ssh and execute something like
