@@ -12,6 +12,11 @@ Rails.application.routes.draw do
         put "/event/:event", to: "invitations#event", as: :event
       end
     end
+    resources :webhooks do
+      member do
+        put "/event/:event", to: "webhooks#event", as: :event
+      end
+    end
     root to: "users#index"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
