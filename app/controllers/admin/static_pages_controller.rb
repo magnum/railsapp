@@ -6,11 +6,6 @@ module Admin
       StaticPage.find_by!(slug: param)
     end
 
-    def edit
-      requested_resource.load_content_from_file!
-      super
-    end
-
     private
 
     # Administrate looks up resources via params[:id]; our routes use :slug.

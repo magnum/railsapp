@@ -1,0 +1,39 @@
+<div>
+  <div class="hidden md:grid md:grid-cols-[4fr_4fr_2fr_3fr] gap-4 border-b border-gray-200 bg-gray-50 px-6 py-3">
+    <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.slug") %></div>
+    <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.title") %></div>
+    <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.state") %></div>
+    <div class="text-right font-medium tracking-wider text-gray-500 uppercase"></div>
+  </div>
+
+  <div>
+    <% if static_pages.any? %>
+      <% static_pages.each do |page| %>
+        <div class="mb-4 grid grid-cols-1 items-center gap-4 bg-white px-6 py-4 hover:bg-gray-100 md:mb-0 md:grid-cols-[4fr_4fr_2fr_3fr] md:shadow-sm">
+          <div class="flex md:justify-start">
+            <label class="list-label min-w-32"><%= t("static_pages.slug") %></label>
+            <span class="text-base  font-bold"><%= page.slug %></span>
+          </div>
+          <div class="flex md:justify-start">
+            <label class="list-label min-w-32"><%= t("static_pages.title") %></label>
+            <%= link_to page.title, page.public_path, class: "flex-1 text-base font-medium text-gray-900 hover:underline md:ml-0 md:flex-none " %>
+          </div>
+          <div class="flex md:justify-start">
+            <label class="list-label min-w-32"><%= t("static_pages.state") %></label>
+            <span class="text-base text-gray-500"><%= badge(page.state) %></span>
+          </div>
+          <div class="flex justify-end">
+            <div class="ml-auto text-base font-medium">
+              <%= link_to t("static_pages.view"), page.public_path, class: "mr-3 text-gray-900 hover:underline" %>
+              <%= link_to t("static_pages.edit"), edit_static_page_path(page.slug), class: "text-gray-900 hover:underline" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-6 py-4 text-center text-base text-gray-500">
+        <%= t("static_pages.no_pages_found") %>
+      </div>
+    <% end %>
+  </div>
+</div>

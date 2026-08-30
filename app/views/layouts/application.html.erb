@@ -26,7 +26,6 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "lexxy", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -39,20 +38,19 @@
       <%= render "shared/locale_select" %>
       <% if signed_in? %>
         <% if current_user.is_editor? %>
-          <%= link_to t("static_pages.new_page_link"), new_static_page_path, class: "hidden md:inline font-medium text-gray-700 hover:text-gray-900" %>
+          <%= link_to t("static_pages.pages_link"), static_pages_path, class: "hidden md:inline font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
         <% end %>
         <% if current_user.admin? %>
-          <%= link_to "Admin", admin_root_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900" %>
-          <%= link_to t("users.index.title"), users_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900" %>
+          <%= link_to "Admin", admin_root_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
+          <%= link_to t("users.index.title"), users_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
         <% end %>
         <%= link_to user_path(current_user), class: "flex items-center gap-2" do %>
           <%= render "users/avatar", user: current_user %>
-          <span class="hidden sm:inline  text-gray-600"><%= current_user.email %></span>
+          <span class="hidden md:inline text-gray-600"><%= current_user.email %></span>
         <% end %>
-        <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: " font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline" %>
+        <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: " font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline hover:underline" %>
       <% else %>
         <%= link_to t("sessions.sign_in"), sign_in_path, class: " font-medium text-gray-700 hover:text-gray-900" %>
-        <%= link_to t("views.invitations.use_invitation_code"), invitation_consume_path, class: "btn-primary  py-1.5 px-3" %>
       <% end %>
     </div>
 

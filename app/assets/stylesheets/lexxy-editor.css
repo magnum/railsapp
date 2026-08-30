@@ -496,7 +496,9 @@
   }
 
   .lexxy-editor__toolbar-button {
+    appearance: none;
     aspect-ratio: 1;
+    background: none;
     block-size: var(--lexxy-toolbar-button-size);
     border: 0;
     border-radius: var(--lexxy-radius);
@@ -733,15 +735,10 @@
       button {
         aspect-ratio: unset;
         background-color: var(--lexxy-color-ink-lightest);
-        display: inline-flex;
-        flex: 0 0 auto;
         inline-size: auto;
         min-inline-size: max-content;
-        overflow: visible;
         padding-inline: 2ch;
-        place-items: center;
         white-space: nowrap;
-        width: auto;
       }
 
       button[value="link"] {

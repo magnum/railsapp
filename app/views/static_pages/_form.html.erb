@@ -1,6 +1,6 @@
 <%= form_with model: static_page, url: static_page.persisted? ? static_page_path(static_page.slug) : static_pages_path, class: "space-y-6", data: { turbo_confirm: t("static_pages.confirm_save") } do |form| %>
   <% if static_page.errors.any? %>
-    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-800">
       <ul class="list-disc pl-5">
         <% static_page.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -26,14 +26,16 @@
 
   <div>
     <%= form.label :content, t("static_pages.content"), class: "mb-1 block text-base font-medium text-gray-700" %>
-    <%= form.lexxy_rich_text_area :content, class: "lexxy-content block w-full min-h-[24rem] rounded-md border border-gray-300" %>
+    <%= form.lexxy_rich_text_area :content, class: "lexxy-content", rows: 20 %>
   </div>
 
   <div class="flex items-center gap-3">
     <%= form.submit t("static_pages.save"), class: "btn-primary" %>
     <%= link_to t("static_pages.cancel"), static_pages_path, class: "btn-default" %>
-    <% if static_page.persisted? %>
-      <%= button_to t("static_pages.delete"), static_page_path(static_page.slug), method: :delete, class: "btn-danger", data: { turbo_confirm: t("static_pages.confirm_delete") } %>
-    <% end %>
+  <% if static_page.persisted? %>
+  <%= link_to t("static_pages.delete"), static_page_path(static_page.slug), class: "text-red-600 hover:text-red-800 hover:underline", data: { turbo_method: :delete, turbo_confirm: t("static_pages.confirm_delete") } %>
+<% end %>
   </div>
 <% end %>
+
+

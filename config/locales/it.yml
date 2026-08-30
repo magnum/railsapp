@@ -106,7 +106,7 @@ it:
     new_title: "Nuova pagina"
     edit_title: "Modifica %{title}"
     new_page: "Nuova pagina"
-    new_page_link: "+ pagina"
+    pages_link: "Pagine"
     edit_page: "Modifica pagina"
     slug: "Slug"
     title: "Titolo"
@@ -123,3 +123,4 @@ it:
     destroyed: "Pagina eliminata."
     confirm_save: "Confermi il salvataggio?"
     confirm_delete: "Sei sicuro di voler eliminare questa pagina?"
+    no_pages_found: "Nessuna pagina trovata."

@@ -7,7 +7,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get "/privacy-policy"
 
     assert_response :success
-    assert_select "article.static-page .static-page__content.lexxy-content"
+    assert_select "article.static-page .lexxy-content"
     assert_match "Privacy policy", response.body
     assert_match "Antonio Molinari", response.body
     assert_google_user_data_disclosures

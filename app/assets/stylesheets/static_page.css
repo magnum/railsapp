@@ -1,7 +1,3 @@
-@import url("lexxy-content.css");
-
-/* Published static pages share Lexxy preview typography via .lexxy-content. */
-
 .static-page {
   margin-inline: auto;
   width: 100%;
@@ -23,8 +19,4 @@
 .static-page__edit:hover {
   color: var(--lexxy-color-ink);
   text-decoration: underline;
-}
-
-.static-page__content {
-  color: var(--lexxy-color-ink);
 }

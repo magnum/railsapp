@@ -7,10 +7,10 @@ class StaticPageDashboard < Administrate::BaseDashboard
     id: Field::Number,
     slug: Field::String,
     title: Field::String,
-    content: RichTextField,
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),
     created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    updated_at: Field::DateTime,
+    content: Field::Text
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

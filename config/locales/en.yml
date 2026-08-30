@@ -127,7 +127,7 @@ en:
     new_title: "New page"
     edit_title: "Edit %{title}"
     new_page: "New page"
-    new_page_link: "+ page"
+    pages_link: "Pages"
     edit_page: "Edit page"
     slug: "Slug"
     title: "Title"
@@ -144,3 +144,4 @@ en:
     destroyed: "Page deleted."
     confirm_save: "Do you confirm to save?"
     confirm_delete: "Are you sure you want to delete this page?"
+    no_pages_found: "No pages found."

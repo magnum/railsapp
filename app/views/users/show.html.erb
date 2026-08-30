@@ -7,9 +7,9 @@
           <%= link_to t("users.actions.edit"), edit_user_path(@user), class: "btn-primary" %>
         <% end %>
         <% if current_user.admin? %>
-          <%= link_to t("users.show.back_to_list"), users_path, class: "btn-default" %>
+          <%= link_to t("users.show.back_to_list"), users_path, class: "btn-link" %>
         <% else %>
-          <%= link_to t("users.show.back_to_home"), root_path, class: "btn-default" %>
+          <%= link_to t("users.show.back_to_home"), root_path, class: "btn-link" %>
         <% end %>
       </div>
     </div>
