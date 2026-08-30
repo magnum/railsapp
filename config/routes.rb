@@ -58,5 +58,5 @@ Rails.application.routes.draw do
 
   get "set_session_locale/:locale", to: "locale#set_session_locale", as: :set_session_locale
 
-  root "home#index"
+  root "public#home"
 end
