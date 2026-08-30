@@ -1,0 +1,39 @@
+<%= form_with model: static_page, url: static_page.persisted? ? static_page_path(static_page.slug) : static_pages_path, class: "space-y-6", data: { turbo_confirm: t("static_pages.confirm_save") } do |form| %>
+  <% if static_page.errors.any? %>
+    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      <ul class="list-disc pl-5">
+        <% static_page.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :slug, t("static_pages.slug"), class: "mb-1 block text-base font-medium text-gray-700" %>
+    <%= form.text_field :slug, required: true, readonly: static_page.persisted?, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 #{'bg-gray-100' if static_page.persisted?}" %>
+  </div>
+
+  <div>
+    <%= form.label :title, t("static_pages.title"), class: "mb-1 block text-base font-medium text-gray-700" %>
+    <%= form.text_field :title, required: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500" %>
+  </div>
+
+  <div>
+    <%= form.label :state, t("static_pages.state"), class: "mb-1 block text-base font-medium text-gray-700" %>
+    <%= form.select :state, StaticPage.aasm.states.map { |s| [ s.name.to_s.humanize, s.name ] }, {}, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500" %>
+  </div>
+
+  <div>
+    <%= form.label :content, t("static_pages.content"), class: "mb-1 block text-base font-medium text-gray-700" %>
+    <%= form.lexxy_rich_text_area :content, class: "lexxy-content block w-full min-h-[24rem] rounded-md border border-gray-300" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= form.submit t("static_pages.save"), class: "btn-primary" %>
+    <%= link_to t("static_pages.cancel"), static_pages_path, class: "btn-default" %>
+    <% if static_page.persisted? %>
+      <%= button_to t("static_pages.delete"), static_page_path(static_page.slug), method: :delete, class: "btn-danger", data: { turbo_confirm: t("static_pages.confirm_delete") } %>
+    <% end %>
+  </div>
+<% end %>

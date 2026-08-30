@@ -1,0 +1,29 @@
+privacy:
+  slug: privacy-policy
+  title: Privacy Policy
+  content: ""
+  state: published
+
+terms:
+  slug: terms-and-conditions
+  title: Terms and Conditions
+  content: ""
+  state: published
+
+cookie:
+  slug: cookie-policy
+  title: Cookie Policy
+  content: ""
+  state: published
+
+not_found:
+  slug: "404"
+  title: Not Found
+  content: ""
+  state: published
+
+test:
+  slug: test
+  title: Test
+  content: ""
+  state: published

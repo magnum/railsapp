@@ -1,0 +1,30 @@
+@import url("lexxy-content.css");
+
+/* Published static pages share Lexxy preview typography via .lexxy-content. */
+
+.static-page {
+  margin-inline: auto;
+  width: 100%;
+}
+
+.static-page__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: 1rem;
+}
+
+.static-page__edit {
+  color: var(--lexxy-color-text-subtle);
+  font-size: var(--lexxy-text-small);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.static-page__edit:hover {
+  color: var(--lexxy-color-ink);
+  text-decoration: underline;
+}
+
+.static-page__content {
+  color: var(--lexxy-color-ink);
+}

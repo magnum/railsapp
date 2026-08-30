@@ -47,6 +47,6 @@ class LocaleController < ApplicationController
   def static_page_slug?(slug)
     slug.present? &&
       slug.match?(StaticPage::SLUG_PATTERN) &&
-      StaticPage.new.resolve_locale(slug).present?
+      StaticPage.resolve_template(slug).present?
   end
 end

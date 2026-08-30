@@ -28,5 +28,10 @@ module Railsapp
     # Mission Control Jobs
     config.mission_control.jobs.base_controller_class = "AdminController"
     config.mission_control.jobs.http_basic_auth_enabled = false
+
+    config.lexxy.override_action_text_defaults = false
+
+    # Route /404 to StaticPagesController; public/404.html would be served by Rack::Static first.
+    config.exceptions_app = routes
   end
 end

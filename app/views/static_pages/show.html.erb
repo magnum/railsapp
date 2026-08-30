@@ -1,0 +1,13 @@
+<article class="static-page">
+  <% if current_user&.is_editor? && @static_page %>
+    <div class="static-page__toolbar">
+      <%= link_to t("static_pages.edit_page"), edit_static_page_path(@static_page.slug), class: "static-page__edit" %>
+    </div>
+  <% end %>
+
+  <div class="static-page__content lexxy-content">
+    <h1><%= @static_page.title %></h1>
+
+    <%== render file: @template_file %>
+  </div>
+</article>

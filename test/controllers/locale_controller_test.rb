@@ -14,11 +14,11 @@ class LocaleControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update rewrites static page url to match selected locale" do
-    get privacy_policy_url = static_page_path(slug: "privacy-policy", locale: "it")
+    get privacy_policy_url = view_static_page_path(slug: "privacy-policy", locale: "it")
     assert_response :success
 
     get set_session_locale_path(locale: "en"), headers: { "HTTP_REFERER" => privacy_policy_url }
-    assert_redirected_to static_page_path(slug: "privacy-policy")
+    assert_redirected_to view_static_page_path(slug: "privacy-policy")
   end
 
   test "update ignores invalid locale" do

@@ -14,6 +14,7 @@ module Admin
 
     include Authenticable
     before_action :administrate?
+    before_action :set_active_storage_url_options
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
 
@@ -35,6 +36,10 @@ module Admin
     def user_not_authorized
       flash[:alert] = t("views.auth.not_authorized")
       redirect_to sign_in_path
+    end
+
+    def set_active_storage_url_options
+      ActiveStorage::Current.url_options = { host: request.base_url }
     end
 
 

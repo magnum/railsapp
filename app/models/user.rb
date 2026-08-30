@@ -38,6 +38,10 @@ class User < ApplicationRecord
     has_role?(:admin)
   end
 
+  def is_editor?
+    admin? || has_role?(:editor)
+  end
+
   def create_default_plan
     plan_type = PlanType.find_by(code: "basic")
     return unless plan_type

@@ -13,6 +13,9 @@ by providing a `content_for(:stylesheet)` block.
   <%= stylesheet_link_tag css_path %>
 <% end %>
 
+<%= stylesheet_link_tag "lexxy", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "administrates_rich_text_field", "data-turbo-track": "reload" %>
+
 <%= yield :stylesheet %>
 
 <style>

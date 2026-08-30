@@ -26,6 +26,7 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "lexxy", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -37,6 +38,9 @@
     <div class="absolute top-0 right-0 z-10 p-4 flex items-center gap-4">
       <%= render "shared/locale_select" %>
       <% if signed_in? %>
+        <% if current_user.is_editor? %>
+          <%= link_to t("static_pages.new_page_link"), new_static_page_path, class: "hidden md:inline font-medium text-gray-700 hover:text-gray-900" %>
+        <% end %>
         <% if current_user.admin? %>
           <%= link_to "Admin", admin_root_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900" %>
           <%= link_to t("users.index.title"), users_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900" %>

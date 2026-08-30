@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         put "/event/:event", to: "webhooks#event", as: :event
       end
     end
+    resources :static_pages, param: :slug
     root to: "users#index"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -57,11 +58,14 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :static_pages, param: :slug, constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }, except: [ :show ]
+
   root "public#home"
 
   slug_constraint = /[a-z0-9]+(?:-[a-z0-9]+)*/
+  get "/404", to: "static_pages#show", defaults: { slug: "404" }, as: :app_not_found
   scope "(:locale)", constraints: { locale: /#{Regexp.union(I18n.available_locales.map(&:to_s))}/ } do
-    get "/:slug", to: "static_pages#show", as: :static_page,
+    get "/:slug", to: "static_pages#show", as: :view_static_page,
         constraints: { slug: slug_constraint }
   end
 end

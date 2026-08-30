@@ -4,37 +4,29 @@ require "test_helper"
 
 class StaticPageTest < ActiveSupport::TestCase
   setup do
-    @dir = Pathname(Dir.mktmpdir)
-    File.write(@dir.join("sample.en.html.erb"), "english")
-    @page = StaticPage.new(views_path: @dir)
+    @page = static_pages(:privacy)
   end
 
-  teardown do
-    FileUtils.remove_entry(@dir)
+  test "validates slug format" do
+    page = StaticPage.new(slug: "../secret", title: "Bad")
+    assert_not page.valid?
   end
 
-  test "uses requested locale when that template exists" do
-    File.write(@dir.join("sample.it.html.erb"), "italian")
-
-    assert_equal "it", @page.resolve_locale("sample", "it")
-    assert_equal "en", @page.resolve_locale("sample", "en")
+  test "resolve_template prefers requested locale" do
+    assert_equal "privacy-policy.it", StaticPage.resolve_template("privacy-policy", "it")
   end
 
-  test "falls back to default locale when requested template is missing" do
-    assert_equal "en", @page.resolve_locale("sample", "it")
+  test "resolve_template falls back to default locale file" do
+    assert_equal "privacy-policy.en", StaticPage.resolve_template("privacy-policy", "xx")
   end
 
-  test "unprefixed request uses default locale" do
-    assert_equal "en", @page.resolve_locale("sample", nil)
+  test "resolve_template returns nil for unknown slug" do
+    assert_nil StaticPage.resolve_template("missing-page")
   end
 
-  test "unknown slug returns nil" do
-    assert_nil @page.resolve_locale("missing", "en")
-    assert_nil @page.resolve_locale("missing", nil)
-  end
-
-  test "rejects unsafe slugs" do
-    assert_nil @page.resolve_locale("../secret", "en")
-    assert_nil @page.resolve_locale("sample.html", "en")
+  test "is_editor includes admin and editor roles" do
+    admin = users(:one)
+    admin.add_role(:admin)
+    assert admin.is_editor?
   end
 end

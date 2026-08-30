@@ -1,0 +1,32 @@
+<div class="mx-auto w-full">
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-semibold text-gray-900"><%= t("static_pages.index_title") %></h1>
+    <%= link_to t("static_pages.new_page"), new_static_page_path, class: "btn-primary" %>
+  </div>
+
+  <div class="overflow-hidden rounded-lg border border-gray-200 bg-white">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700"><%= t("static_pages.slug") %></th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700"><%= t("static_pages.title") %></th>
+          <th class="px-4 py-3 text-left text-sm font-medium text-gray-700"><%= t("static_pages.state") %></th>
+          <th class="px-4 py-3 text-right text-sm font-medium text-gray-700"><%= t("static_pages.actions") %></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @static_pages.each do |page| %>
+          <tr>
+            <td class="px-4 py-3 text-sm text-gray-900"><%= page.slug %></td>
+            <td class="px-4 py-3 text-sm text-gray-900"><%= page.title %></td>
+            <td class="px-4 py-3 text-sm text-gray-600"><%= page.state.humanize %></td>
+            <td class="px-4 py-3 text-right text-sm">
+              <%= link_to t("static_pages.view"), page.public_path, class: "text-gray-600 hover:text-gray-900 hover:underline" %>
+              <%= link_to t("static_pages.edit"), edit_static_page_path(page.slug), class: "ml-3 text-gray-600 hover:text-gray-900 hover:underline" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

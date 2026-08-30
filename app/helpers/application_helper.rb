@@ -1,13 +1,4 @@
 module ApplicationHelper
-  def legal_page_path(slug)
-    locale = I18n.locale.to_s
-    if locale == I18n.default_locale.to_s
-      static_page_path(slug: slug)
-    else
-      static_page_path(slug: slug, locale: locale)
-    end
-  end
-
   def google_oauth_configured?
     ENV["GOOGLE_CLIENT_ID"].present? &&
       ENV["GOOGLE_CLIENT_SECRET"].present?

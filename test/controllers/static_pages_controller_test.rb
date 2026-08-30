@@ -7,6 +7,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get "/privacy-policy"
 
     assert_response :success
+    assert_select "article.static-page .static-page__content.lexxy-content"
     assert_match "Privacy policy", response.body
     assert_match "Antonio Molinari", response.body
     assert_google_user_data_disclosures
@@ -43,15 +44,25 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get "/privacy-policy"
 
     assert_select "footer"
-    assert_select "footer a[href=?]", static_page_path(slug: "privacy-policy")
-    assert_select "footer a[href=?]", static_page_path(slug: "terms-and-conditions")
-    assert_select "footer a[href=?]", static_page_path(slug: "cookie-policy")
+    assert_select "footer a[href=?]", "/privacy-policy"
+    assert_select "footer a[href=?]", "/terms-and-conditions"
+    assert_select "footer a[href=?]", "/cookie-policy"
   end
 
-  test "unknown static page is not found" do
+  test "404 page renders custom content" do
+    get app_not_found_path
+
+    assert_response :success
+    assert_includes response.body, "content not found"
+  end
+
+  test "unknown static page redirects to 404 page" do
     get "/does-not-exist"
 
-    assert_response :not_found
+    assert_redirected_to app_not_found_path
+    follow_redirect!
+    assert_response :success
+    assert_includes response.body, "content not found"
   end
 
   test "existing app routes are not captured by static pages" do
