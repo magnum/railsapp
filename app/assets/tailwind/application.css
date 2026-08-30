@@ -86,5 +86,5 @@ body {
 }
 
 .list-label {
-  @apply text-sm font-medium text-gray-500 uppercase tracking-wider md:hidden;
+  @apply  font-medium text-gray-500 uppercase tracking-wider md:hidden;
 }

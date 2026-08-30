@@ -29,18 +29,16 @@
     <%= f.submit t("registrations.sign_up"), class: "btn-primary w-full" %>
   <% end %>
 
-  <div class="mt-6">
+  <div class="mt-4">
     <%= render "shared/invitation_link" %>
   </div>
 
   <% if google_oauth_configured? %>
-    <div class="mt-6">
+    <div class="mt-4">
       <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
-        </div>
         <div class="relative flex justify-center text-base">
-          <span class="px-2 bg-white text-gray-500"><%= t("registrations.or_continue") %></span>
+          <span class="px-2 
+           text-gray-500"><%= t("registrations.or_continue") %></span>
         </div>
       </div>
       <div class="mt-4">

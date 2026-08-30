@@ -16,13 +16,10 @@
   <% end %>
 
   <% if google_oauth_configured? %>
-    <div class="mt-6">
+    <div class="mt-4">
       <div class="relative">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
-        </div>
         <div class="relative flex justify-center text-base">
-          <span class="px-2 bg-white text-gray-500"><%= t("sessions.or_continue") %></span>
+          <span class="px-2 text-gray-500"><%= t("sessions.or_continue") %></span>
         </div>
       </div>
       <div class="mt-4">
@@ -39,11 +36,11 @@
     </div>
   <% end %>
 
-  <div class="mt-6">
+  <div class="mt-4">
     <%= render "shared/invitation_link" %>
   </div>
 
-  <p class="mt-6 text-center text-base text-gray-600">
+  <p class="mt-4 text-center text-base text-gray-600">
     <%= t("sessions.no_account") %>
     <%= link_to t("registrations.sign_up"), sign_up_path, class: "font-medium text-gray-900 hover:text-gray-700" %>
   </p>
