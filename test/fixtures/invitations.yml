@@ -1,16 +1,16 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  code: MyString
-  signature: MyString
+  code: invite_one
+  signature: signature_one
   valid_from: 2026-03-20 16:11:24
   valid_to: 2026-03-20 16:11:24
   consumed_at: 2026-03-20 16:11:24
   state: MyString
 
 two:
-  code: MyString
-  signature: MyString
+  code: invite_two
+  signature: signature_two
   valid_from: 2026-03-20 16:11:24
   valid_to: 2026-03-20 16:11:24
   consumed_at: 2026-03-20 16:11:24

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  allow_browser versions: :modern, unless: :skip_modern_browser_check?
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
@@ -13,10 +13,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :logged_in?
 
   before_action :set_active_storage_url_options
-
-  def default_url_options
-    { locale: I18n.locale }
-  end
 
   private
 
@@ -40,5 +36,9 @@ class ApplicationController < ActionController::Base
       flash[:alert] = t("views.auth.login_required")
       redirect_to sign_in_path
     end
+  end
+
+  def skip_modern_browser_check?
+    false
   end
 end

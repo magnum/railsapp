@@ -30,38 +30,38 @@ Rails.application.routes.draw do
     # resources :documents, only: [:index, :show, :create]
   end
 
+  # Auth (outside locale scope — session drives I18n, like flycal)
+  get "sign_in", to: "sessions#new", as: :sign_in
+  post "sign_in", to: "sessions#create"
+  delete "sign_out", to: "sessions#destroy", as: :sign_out
+  get "auth/failure", to: "sessions#failure"
+  get "auth/:provider/callback", to: "sessions#create"
 
-  scope "/(:locale)", locale: /#{I18n.available_locales.join("|")}/ do
-    # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-    # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-    # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  get "sign_up", to: "registrations#new", as: :sign_up
+  post "sign_up", to: "registrations#create"
 
-    # Invitation consume: GET /invitations/consume or GET /invitations/consume/:code (pre-filled)
-    get "invitations/consume", to: "invitations#consume", as: :invitation_consume
-    get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
-    post "invitations/consume", to: "invitations#consume"
+  resource :locale, only: [], controller: "locale" do
+    get :update, on: :collection, as: :set_session
+  end
 
-    # Authentication
-    get "sign_in", to: "sessions#new", as: :sign_in
-    post "sign_in", to: "sessions#create"
-    delete "sign_out", to: "sessions#destroy", as: :sign_out
-    get "auth/failure", to: "sessions#failure"
-    get "auth/:provider/callback", to: "sessions#create"
+  get "invitations/consume", to: "invitations#consume", as: :invitation_consume
+  get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
+  post "invitations/consume", to: "invitations#consume"
 
-    get "sign_up", to: "registrations#new", as: :sign_up
-    post "sign_up", to: "registrations#create"
+  resources :users, only: [ :index, :show, :edit, :update ]
 
-    resources :users, only: [ :index, :show, :edit, :update ]
-
-    namespace :api do
+  namespace :api do
+    concerns :apiable
+    namespace :v1 do
       concerns :apiable
-      namespace :v1 do
-        concerns :apiable
-      end
     end
   end
 
-  get "set_session_locale/:locale", to: "locale#set_session_locale", as: :set_session_locale
-
   root "public#home"
+
+  slug_constraint = /[a-z0-9]+(?:-[a-z0-9]+)*/
+  scope "(:locale)", constraints: { locale: /#{Regexp.union(I18n.available_locales.map(&:to_s))}/ } do
+    get "/:slug", to: "static_pages#show", as: :static_page,
+        constraints: { slug: slug_constraint }
+  end
 end

@@ -1,0 +1,74 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+class StaticPagesControllerTest < ActionDispatch::IntegrationTest
+  test "privacy policy without locale uses default english view" do
+    get "/privacy-policy"
+
+    assert_response :success
+    assert_match "Privacy policy", response.body
+    assert_match "Antonio Molinari", response.body
+    assert_google_user_data_disclosures
+  end
+
+  test "privacy policy italian url" do
+    get "/it/privacy-policy"
+
+    assert_response :success
+    assert_match "Informativa sulla privacy", response.body
+  end
+
+  test "terms and conditions english and italian" do
+    get "/terms-and-conditions"
+    assert_response :success
+    assert_match "Terms and conditions", response.body
+
+    get "/it/terms-and-conditions"
+    assert_response :success
+    assert_match "Termini e condizioni", response.body
+  end
+
+  test "cookie policy english and italian" do
+    get "/cookie-policy"
+    assert_response :success
+    assert_match "Cookie policy", response.body
+
+    get "/it/cookie-policy"
+    assert_response :success
+    assert_match "Informativa cookie", response.body
+  end
+
+  test "legal pages include footer links" do
+    get "/privacy-policy"
+
+    assert_select "footer"
+    assert_select "footer a[href=?]", static_page_path(slug: "privacy-policy")
+    assert_select "footer a[href=?]", static_page_path(slug: "terms-and-conditions")
+    assert_select "footer a[href=?]", static_page_path(slug: "cookie-policy")
+  end
+
+  test "unknown static page is not found" do
+    get "/does-not-exist"
+
+    assert_response :not_found
+  end
+
+  test "existing app routes are not captured by static pages" do
+    get sign_in_path
+
+    assert_response :success
+    assert_select "form"
+  end
+
+  private
+
+  def assert_google_user_data_disclosures
+    assert_select "h2#google-user-data"
+    assert_select "h3#google-data-access"
+    assert_select "h3#google-data-use"
+    assert_select "h3#google-data-sharing"
+    assert_select "h3#google-data-protection"
+    assert_select "h3#google-data-retention"
+  end
+end
