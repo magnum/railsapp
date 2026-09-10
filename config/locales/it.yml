@@ -35,6 +35,11 @@ it:
       back_to_home: "Torna alla home"
     auth:
       not_authorized: "Non sei autorizzato ad accedere a quest'area."
+      login_required: "Devi effettuare l'accesso per continuare."
+    admin:
+      event_success: "%{event} completato con successo."
+      event_fail: "%{event} non riuscito: %{message}"
+      select_account: "Account"
 
   authentication:
     require_sign_in: "Devi effettuare l'accesso per continuare."
@@ -52,7 +57,13 @@ it:
     no_account: "Non hai un account?"
 
   activerecord:
+    models:
+      account:
+        one: "Account"
+        other: "Account"
     attributes:
+      account:
+        name: "Nome"
       user:
         id: "ID"
         firstname: "Nome"

@@ -10,7 +10,7 @@ class StaticPagesController < ApplicationController
 
   def index
     authorize StaticPage
-    @static_pages = policy_scope(StaticPage).order(:slug)
+    @static_pages = policy_scope(current_account.static_pages).order(:slug)
   end
 
   def show
@@ -39,12 +39,12 @@ class StaticPagesController < ApplicationController
   end
 
   def new
-    @static_page = StaticPage.new(state: "created")
+    @static_page = current_account.static_pages.new(state: "created")
     authorize @static_page
   end
 
   def create
-    @static_page = StaticPage.new(static_page_params)
+    @static_page = current_account.static_pages.new(static_page_params)
     authorize @static_page
 
     if @static_page.save
@@ -76,7 +76,7 @@ class StaticPagesController < ApplicationController
   private
 
   def set_static_page
-    @static_page = StaticPage.find_by!(slug: params[:slug])
+    @static_page = current_account.static_pages.find_by!(slug: params[:slug])
   end
 
   def authorize_static_page

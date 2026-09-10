@@ -2,6 +2,10 @@
 
 module Admin
   class WebhooksController < Admin::ApplicationController
+    def scoped_resource
+      @current_account.webhooks
+    end
+
     def default_sorting_attribute
       :created_at
     end

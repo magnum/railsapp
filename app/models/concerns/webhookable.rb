@@ -17,6 +17,7 @@ module Webhookable
     tags += [ "mock" ] if ENV["MOCK_WEBHOOKS"] == "true"
     Webhook.create!(
       webhookable: self,
+      account: (account if respond_to?(:account)),
       method: method,
       url: url,
       body: body,

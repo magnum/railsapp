@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
       end
     end
 
-    user = User.from_omniauth(auth)
+    user = User.from_omniauth(auth, account: current_invitation&.account)
     session[:user_id] = user.id
 
     invitation = current_invitation

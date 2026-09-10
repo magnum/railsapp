@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
   namespace :admin do
+    resources :accounts
     resources :users
     resources :roles
     resources :api_keys
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
   get "sign_in", to: "sessions#new", as: :sign_in
   post "sign_in", to: "sessions#create"
   delete "sign_out", to: "sessions#destroy", as: :sign_out
+  post "select_account", to: "select_account#create"
   get "auth/failure", to: "sessions#failure"
   get "auth/:provider/callback", to: "sessions#create"
 

@@ -6,7 +6,7 @@ module ApiKeyable
   end
 
   def api_key!
-    token = ApiKey.create!(bearer: self)
+    token = ApiKey.create!(bearer: self, account: account)
     token.raw_token
   end
 end

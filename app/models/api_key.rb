@@ -7,6 +7,8 @@ class ApiKey < ApplicationRecord
   HMAC_SECRET_KEY = ENV["API_KEY_HMAC_SECRET_KEY"]
   TOKEN_NAMESPACE = "tkn"
 
+  include Accountable
+
   belongs_to :bearer, polymorphic: true
 
   before_validation :set_common_token_prefix, on: :create

@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  account: one
   code: invite_one
   signature: signature_one
   valid_from: 2026-03-20 16:11:24
@@ -9,6 +10,7 @@ one:
   state: MyString
 
 two:
+  account: one
   code: invite_two
   signature: signature_two
   valid_from: 2026-03-20 16:11:24

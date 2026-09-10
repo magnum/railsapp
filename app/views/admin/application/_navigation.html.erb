@@ -22,6 +22,22 @@ as defined by the routes in the `admin/` namespace
 
   <%= link_to "Jobs", "/jobs", class: "navigation__link navigation__link--inactive" if current_user.admin? %>
 
+  <div class="mt-4 mb-2">
+    <%= form_with url: select_account_path, method: :post do %>
+      <%= label_tag :account_id, t("views.admin.select_account"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
+      <%= select_tag :account_id,
+            options_from_collection_for_select(
+              current_user.admin? ? Account.order(:name) : Account.where(id: @current_account&.id),
+              :id,
+              :name,
+              @current_account&.id
+            ),
+            disabled: !current_user.admin?,
+            class: "w-full rounded-md border border-gray-300 px-2 py-1 text-sm",
+            onchange: ("this.form.requestSubmit()" if current_user.admin?) %>
+    <% end %>
+  </div>
+
   <div class="locale flex flex-row gap-2 mt-4 mb-4">
     <% I18n.available_locales.each do |locale| %>
       <%= link_to locale.upcase, 

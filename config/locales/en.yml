@@ -52,9 +52,11 @@ en:
       back_to_home: "Back to home"
     auth:
       not_authorized: "You are not authorized to access this area."
+      login_required: "You must be signed in to continue."
     admin:
       event_success: "%{event} completed successfully."
       event_fail: "%{event} failed: %{message}"
+      select_account: "Account"
 
   authentication:
     require_sign_in: "You must be signed in to continue."
@@ -72,7 +74,13 @@ en:
     no_account: "Don't have an account?"
 
   activerecord:
+    models:
+      account:
+        one: "Account"
+        other: "Accounts"
     attributes:
+      account:
+        name: "Name"
       user:
         id: "ID"
         firstname: "First name"

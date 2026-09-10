@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Webhook < ApplicationRecord
+  include Accountable
   include ValidationSkippable
 
   belongs_to :webhookable, polymorphic: true

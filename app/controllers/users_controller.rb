@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update]
 
   def index
-    @users = policy_scope(User).order(:lastname, :firstname)
+    @users = policy_scope(current_account.users).order(:lastname, :firstname)
   end
 
   def show

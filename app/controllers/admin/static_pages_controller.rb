@@ -2,8 +2,12 @@
 
 module Admin
   class StaticPagesController < Admin::ApplicationController
+    def scoped_resource
+      @current_account.static_pages
+    end
+
     def find_resource(param)
-      StaticPage.find_by!(slug: param)
+      scoped_resource.find_by!(slug: param)
     end
 
     private

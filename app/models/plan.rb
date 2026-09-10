@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Plan < ApplicationRecord
+  include Accountable
+
   belongs_to :plan_type
   belongs_to :user
 

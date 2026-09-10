@@ -13,10 +13,10 @@ module Admin
     include Administrate::Punditize
 
     include Authenticable
+    include CurrentAccount
     before_action :administrate?
     before_action :set_active_storage_url_options
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-
 
     def event
       path = send("admin_#{requested_resource.class.name.underscore}_path", requested_resource)
@@ -29,6 +29,12 @@ module Admin
       rescue => e
         redirect_to path, alert: t("views.admin.event_fail", event: params[:event].humanize, message: e.message)
       end
+    end
+
+    def new_resource(params = {})
+      resource = super
+      resource.account = current_account if resource.respond_to?(:account=) && resource.account.nil? && current_account
+      resource
     end
 
     private

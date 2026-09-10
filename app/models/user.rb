@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include Accountable
   include ApiKeyable
   include Plannable
 
@@ -14,7 +15,7 @@ class User < ApplicationRecord
 
   after_create :create_default_plan
 
-  def self.from_omniauth(auth)
+  def self.from_omniauth(auth, account: nil)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
       user.email = auth.info.email
       user.firstname = auth.info.first_name.presence || auth.info.name&.split&.first || "User"
@@ -22,6 +23,7 @@ class User < ApplicationRecord
       user.avatar_url = auth.info.image
       user.provider = auth.provider
       user.uid = auth.uid
+      user.account = account if user.new_record? && account
       user.save!
     end
   end
@@ -49,6 +51,7 @@ class User < ApplicationRecord
     Plan.create!(
       plan_type: plan_type,
       user: self,
+      account: account,
       valid_from: Date.current,
       valid_to: Date.current + 365.days
     )

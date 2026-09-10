@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Invitation < ApplicationRecord
+  include Accountable
+
   attr_accessor :skip_validation
 
   CODE_LENGTH = 6
