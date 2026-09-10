@@ -5,6 +5,7 @@ require "administrate/base_dashboard"
 class StaticPageDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    account: AccountField.with_options(scope: -> { Account.order(:name) }),
     slug: Field::String,
     title: Field::String,
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),
@@ -22,6 +23,7 @@ class StaticPageDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    account
     slug
     title
     state
@@ -31,6 +33,7 @@ class StaticPageDashboard < Administrate::BaseDashboard
   ].freeze
 
   FORM_ATTRIBUTES = %i[
+    account
     slug
     title
     state

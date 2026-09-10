@@ -1,0 +1,15 @@
+<div class="field-unit__label">
+  <%= f.label field.attribute, for: "#{f.object_name}_#{field.permitted_attribute}" %>
+</div>
+<div class="field-unit__field">
+  <%= f.select(
+        field.permitted_attribute,
+        options_for_select(field.associated_resource_options, field.selected_option),
+        { include_blank: field.include_blank_option },
+        disabled: !current_user.admin?,
+        data: { controller: field.html_controller }
+      ) %>
+  <% unless current_user.admin? %>
+    <%= f.hidden_field field.permitted_attribute, value: field.selected_option %>
+  <% end %>
+</div>

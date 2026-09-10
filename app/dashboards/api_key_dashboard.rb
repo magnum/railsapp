@@ -3,6 +3,7 @@ require "administrate/base_dashboard"
 class ApiKeyDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    account: AccountField.with_options(scope: -> { Account.order(:name) }),
     bearer: Field::Polymorphic.with_options(searchable: true, searchable_field: :email, associated_resource_name: "User"),
     common_token_prefix: Field::String,
     expires_at: Field::DateTime,
@@ -22,6 +23,7 @@ class ApiKeyDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    account
     bearer
     common_token_prefix
     expires_at
@@ -33,6 +35,7 @@ class ApiKeyDashboard < Administrate::BaseDashboard
   ].freeze
 
   FORM_ATTRIBUTES = %i[
+    account
     bearer
     expires_at
     revoked_at

@@ -37,6 +37,12 @@ module Admin
       resource
     end
 
+    def resource_params
+      permitted = super
+      permitted = permitted.except(:account_id, "account_id") unless current_user.admin?
+      permitted
+    end
+
     private
 
     def user_not_authorized

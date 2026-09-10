@@ -5,6 +5,7 @@ require "administrate/base_dashboard"
 class WebhookDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    account: AccountField.with_options(scope: -> { Account.order(:name) }),
     webhookable: Field::Polymorphic,
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),
     async: Field::Boolean,
@@ -35,6 +36,7 @@ class WebhookDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    account
     webhookable
     state
     async
@@ -53,6 +55,7 @@ class WebhookDashboard < Administrate::BaseDashboard
   ].freeze
 
   FORM_ATTRIBUTES = %i[
+    account
     webhookable
     async
     method

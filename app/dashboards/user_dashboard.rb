@@ -9,6 +9,7 @@ class UserDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
+    account: AccountField.with_options(scope: -> { Account.order(:name) }),
     api_keys: Field::HasMany,
     avatar_url: Field::String,
     email: Field::String,
@@ -41,6 +42,7 @@ class UserDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    account
     email
     firstname
     lastname
@@ -58,6 +60,7 @@ class UserDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
+    account
     email
     firstname
     lastname
