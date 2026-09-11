@@ -7,7 +7,7 @@ class SelectAccountControllerTest < ActionDispatch::IntegrationTest
     @user = users(:one)
     @user.update!(password: "password1", password_confirmation: "password1")
     @account = accounts(:one)
-    @other_account = Account.create!(name: "Other")
+    @other_account = Account.create!(user: users(:two))
   end
 
   test "admin sets selected_account_id in session" do

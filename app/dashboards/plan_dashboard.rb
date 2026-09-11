@@ -9,7 +9,7 @@ class PlanDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    account: AccountField.with_options(scope: -> { Account.order(:name) }),
+    account: AccountField.with_options(scope: -> { Account.for_select }),
     plan_type: Field::BelongsTo,
     user: Field::BelongsTo,
     valid_from: Field::Date,

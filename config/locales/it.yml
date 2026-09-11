@@ -63,7 +63,7 @@ it:
         other: "Account"
     attributes:
       account:
-        name: "Nome"
+        user: "Utente principale"
       user:
         id: "ID"
         account: "Account"

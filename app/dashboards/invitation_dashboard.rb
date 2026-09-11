@@ -5,7 +5,7 @@ require "administrate/base_dashboard"
 class InvitationDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    account: AccountField.with_options(scope: -> { Account.order(:name) }),
+    account: AccountField.with_options(scope: -> { Account.for_select }),
     code: Field::String,
     signature: Field::String,
     valid_from: Field::DateTime,

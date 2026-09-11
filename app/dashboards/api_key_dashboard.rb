@@ -3,7 +3,7 @@ require "administrate/base_dashboard"
 class ApiKeyDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    account: AccountField.with_options(scope: -> { Account.order(:name) }),
+    account: AccountField.with_options(scope: -> { Account.for_select }),
     bearer: Field::Polymorphic.with_options(searchable: true, searchable_field: :email, associated_resource_name: "User"),
     common_token_prefix: Field::String,
     expires_at: Field::DateTime,

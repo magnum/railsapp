@@ -5,7 +5,7 @@ require "administrate/base_dashboard"
 class StaticPageDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    account: AccountField.with_options(scope: -> { Account.order(:name) }),
+    account: AccountField.with_options(scope: -> { Account.for_select }),
     slug: Field::String,
     title: Field::String,
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),

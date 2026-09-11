@@ -27,9 +27,9 @@ as defined by the routes in the `admin/` namespace
       <%= label_tag :account_id, t("views.admin.select_account"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
       <%= select_tag :account_id,
             options_from_collection_for_select(
-              current_user.admin? ? Account.order(:name) : Account.where(id: @current_account&.id),
+              current_user.admin? ? Account.for_select : Account.for_select.where(id: @current_account&.id),
               :id,
-              :name,
+              :display_name,
               @current_account&.id
             ),
             disabled: !current_user.admin?,

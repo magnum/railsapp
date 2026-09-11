@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_10_165100) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "accounts", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_accounts_on_user_id", unique: true
   end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -170,7 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_10_165100) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.bigint "account_id", null: false
+    t.bigint "account_id"
     t.string "avatar_url"
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -214,6 +215,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_10_165100) do
     t.index ["webhookable_type", "webhookable_id"], name: "index_webhooks_on_webhookable"
   end
 
+  add_foreign_key "accounts", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_keys", "accounts"
