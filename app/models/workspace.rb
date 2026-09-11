@@ -10,17 +10,23 @@ class Workspace < ApplicationRecord
   has_many :webhooks, dependent: :restrict_with_exception
   has_many :static_pages, dependent: :restrict_with_exception
 
+  before_validation :assign_default_name, on: :create
   after_create :ensure_principal_is_member
 
   validates :user_id, uniqueness: true
+  validates :name, presence: true
 
-  scope :for_select, -> { includes(:user).order(:id) }
+  scope :for_select, -> { order(:id) }
 
   def display_name
-    self.name || "Workspace ##{id}"
+    "#{id} - #{name}".truncate(20, omission: "...")
   end
 
   private
+
+  def assign_default_name
+    self.name = "My Workspace" if name.blank?
+  end
 
   def ensure_principal_is_member
     return if user.blank? || user.workspace_id.present?

@@ -13,6 +13,16 @@ class WorkspaceTest < ActiveSupport::TestCase
     assert_not workspace.valid?
   end
 
+  test "defaults name to My Workspace when none is given" do
+    workspace = Workspace.create!(user: users(:two))
+    assert_equal "My Workspace", workspace.name
+  end
+
+  test "keeps an explicit name" do
+    workspace = Workspace.create!(user: users(:two), name: "Acme")
+    assert_equal "Acme", workspace.name
+  end
+
   test "assigns the principal as a member when they have no workspace" do
     user = User.create!(
       firstname: "Ada",
@@ -23,6 +33,7 @@ class WorkspaceTest < ActiveSupport::TestCase
     )
 
     assert_predicate user.workspace, :present?
+    assert_equal "My Workspace", user.workspace.name
     assert_equal user, user.workspace.user
     assert_includes user.workspace.users, user
   end

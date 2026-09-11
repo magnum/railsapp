@@ -80,6 +80,7 @@ en:
         other: "Workspaces"
     attributes:
       workspace:
+        name: "Name"
         user: "Owner"
       user:
         id: "ID"

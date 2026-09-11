@@ -63,6 +63,7 @@ it:
         other: "Workspace"
     attributes:
       workspace:
+        name: "Nome"
         user: "Utente principale"
       user:
         id: "ID"
