@@ -39,7 +39,7 @@ it:
     admin:
       event_success: "%{event} completato con successo."
       event_fail: "%{event} non riuscito: %{message}"
-      select_account: "Account"
+      select_workspace: "Workspace"
 
   authentication:
     require_sign_in: "Devi effettuare l'accesso per continuare."
@@ -58,15 +58,15 @@ it:
 
   activerecord:
     models:
-      account:
-        one: "Account"
-        other: "Account"
+      workspace:
+        one: "Workspace"
+        other: "Workspace"
     attributes:
-      account:
+      workspace:
         user: "Utente principale"
       user:
         id: "ID"
-        account: "Account"
+        workspace: "Workspace"
         firstname: "Nome"
         lastname: "Cognome"
         email: "Email"

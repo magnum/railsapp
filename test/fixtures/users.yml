@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  account: one
+  workspace: one
   firstname: MyString
   lastname: MyString
   email: user_one@example.com
 
 two:
-  account: one
+  workspace: one
   firstname: MyString
   lastname: MyString
   email: user_two@example.com

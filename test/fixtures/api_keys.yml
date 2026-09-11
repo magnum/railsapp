@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  account: one
+  workspace: one
   bearer: one
   bearer_type: Bearer
   common_token_prefix: MyString
@@ -11,7 +11,7 @@ one:
   revoked_at: 2026-03-20 16:30:27
 
 two:
-  account: one
+  workspace: one
   bearer: two
   bearer_type: Bearer
   common_token_prefix: MyString

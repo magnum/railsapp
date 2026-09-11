@@ -1,7 +1,7 @@
 module Admin
   class InvitationsController < Admin::ApplicationController
     def scoped_resource
-      @current_account.invitations
+      @current_workspace.invitations
     end
   end
 end

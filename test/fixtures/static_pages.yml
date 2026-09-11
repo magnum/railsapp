@@ -1,33 +1,33 @@
 privacy:
-  account: one
+  workspace: one
   slug: privacy-policy
   title: Privacy Policy
   content: ""
   state: published
 
 terms:
-  account: one
+  workspace: one
   slug: terms-and-conditions
   title: Terms and Conditions
   content: ""
   state: published
 
 cookie:
-  account: one
+  workspace: one
   slug: cookie-policy
   title: Cookie Policy
   content: ""
   state: published
 
 not_found:
-  account: one
+  workspace: one
   slug: "404"
   title: Not Found
   content: ""
   state: published
 
 test:
-  account: one
+  workspace: one
   slug: test
   title: Test
   content: ""

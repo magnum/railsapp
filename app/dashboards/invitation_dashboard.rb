@@ -5,7 +5,7 @@ require "administrate/base_dashboard"
 class InvitationDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    account: AccountField.with_options(scope: -> { Account.for_select }),
+    workspace: WorkspaceField.with_options(scope: -> { Workspace.for_select }),
     code: Field::String,
     signature: Field::String,
     valid_from: Field::DateTime,
@@ -26,7 +26,7 @@ class InvitationDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    account
+    workspace
     state
     code
     signature
@@ -38,7 +38,7 @@ class InvitationDashboard < Administrate::BaseDashboard
   ].freeze
 
   FORM_ATTRIBUTES = %i[
-    account
+    workspace
     valid_from
     valid_to
     code

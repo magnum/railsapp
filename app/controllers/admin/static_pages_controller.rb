@@ -3,7 +3,7 @@
 module Admin
   class StaticPagesController < Admin::ApplicationController
     def scoped_resource
-      @current_account.static_pages
+      @current_workspace.static_pages
     end
 
     def find_resource(param)

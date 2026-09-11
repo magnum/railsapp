@@ -13,7 +13,7 @@ module Admin
     include Administrate::Punditize
 
     include Authenticable
-    include CurrentAccount
+    include CurrentWorkspace
     before_action :administrate?
     before_action :set_active_storage_url_options
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -33,13 +33,13 @@ module Admin
 
     def new_resource(params = {})
       resource = super
-      resource.account = current_account if resource.respond_to?(:account=) && resource.account.nil? && current_account
+      resource.workspace = current_workspace if resource.respond_to?(:workspace=) && resource.workspace.nil? && current_workspace
       resource
     end
 
     def resource_params
       permitted = super
-      permitted = permitted.except(:account_id, "account_id") unless current_user.admin?
+      permitted = permitted.except(:workspace_id, "workspace_id") unless current_user.admin?
       permitted
     end
 

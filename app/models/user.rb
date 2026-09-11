@@ -1,9 +1,9 @@
 class User < ApplicationRecord
-  include Accountable
+  include Workspaceable
   include ApiKeyable
   include Plannable
 
-  has_one :owned_account, class_name: "Account", inverse_of: :user, dependent: :restrict_with_exception
+  has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
 
   rolify
   has_secure_password validations: false
@@ -15,9 +15,9 @@ class User < ApplicationRecord
   validate :password_or_oauth
   validate :password_confirmation_match, if: -> { password.present? }
 
-  after_create :ensure_owned_account, :create_default_plan
+  after_create :ensure_owned_workspace, :create_default_plan
 
-  def self.from_omniauth(auth, account: nil)
+  def self.from_omniauth(auth, workspace: nil)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
       user.email = auth.info.email
       user.firstname = auth.info.first_name.presence || auth.info.name&.split&.first || "User"
@@ -25,7 +25,7 @@ class User < ApplicationRecord
       user.avatar_url = auth.info.image
       user.provider = auth.provider
       user.uid = auth.uid
-      user.account = account if user.new_record? && account
+      user.workspace = workspace if user.new_record? && workspace
       user.save!
     end
   end
@@ -53,7 +53,7 @@ class User < ApplicationRecord
     Plan.create!(
       plan_type: plan_type,
       user: self,
-      account: account,
+      workspace: workspace,
       valid_from: Date.current,
       valid_to: Date.current + 365.days
     )
@@ -61,13 +61,13 @@ class User < ApplicationRecord
 
   private
 
-  def ensure_owned_account
-    return if account_id.present?
+  def ensure_owned_workspace
+    return if workspace_id.present?
 
-    created = Account.create!(user: self)
-    self.account_id = created.id
-    association(:account).reset
-    self.account = created
+    created = Workspace.create!(user: self)
+    self.workspace_id = created.id
+    association(:workspace).reset
+    self.workspace = created
   end
 
   def password_or_oauth

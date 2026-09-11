@@ -10,16 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_171600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "accounts", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_accounts_on_user_id", unique: true
-  end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -60,7 +53,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   end
 
   create_table "api_keys", force: :cascade do |t|
-    t.bigint "account_id", null: false
     t.bigint "bearer_id", null: false
     t.string "bearer_type", null: false
     t.string "common_token_prefix", null: false
@@ -70,13 +62,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
     t.datetime "revoked_at"
     t.string "token_digest", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_api_keys_on_account_id"
+    t.bigint "workspace_id", null: false
     t.index ["bearer_type", "bearer_id"], name: "index_api_keys_on_bearer"
     t.index ["token_digest"], name: "index_api_keys_on_token_digest", unique: true
+    t.index ["workspace_id"], name: "index_api_keys_on_workspace_id"
   end
 
   create_table "invitations", force: :cascade do |t|
-    t.bigint "account_id", null: false
     t.string "code", null: false
     t.datetime "consumed_at"
     t.datetime "created_at", null: false
@@ -85,10 +77,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
     t.datetime "updated_at", null: false
     t.datetime "valid_from", null: false
     t.datetime "valid_to", null: false
-    t.index ["account_id"], name: "index_invitations_on_account_id"
+    t.bigint "workspace_id", null: false
     t.index ["code"], name: "index_invitations_on_code", unique: true
     t.index ["signature"], name: "index_invitations_on_signature", unique: true
     t.index ["state"], name: "index_invitations_on_state"
+    t.index ["workspace_id"], name: "index_invitations_on_workspace_id"
   end
 
   create_table "plan_types", force: :cascade do |t|
@@ -105,16 +98,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   end
 
   create_table "plans", force: :cascade do |t|
-    t.bigint "account_id", null: false
     t.datetime "created_at", null: false
     t.bigint "plan_type_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.date "valid_from"
     t.date "valid_to"
-    t.index ["account_id"], name: "index_plans_on_account_id"
+    t.bigint "workspace_id", null: false
     t.index ["plan_type_id"], name: "index_plans_on_plan_type_id"
     t.index ["user_id"], name: "index_plans_on_user_id"
+    t.index ["workspace_id"], name: "index_plans_on_workspace_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -128,15 +121,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   end
 
   create_table "static_pages", force: :cascade do |t|
-    t.bigint "account_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
     t.string "slug", null: false
     t.string "state", default: "created", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_static_pages_on_account_id"
+    t.bigint "workspace_id", null: false
     t.index ["slug"], name: "index_static_pages_on_slug", unique: true
+    t.index ["workspace_id"], name: "index_static_pages_on_workspace_id"
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -171,7 +164,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.bigint "account_id"
     t.string "avatar_url"
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -181,9 +173,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
     t.string "provider"
     t.string "uid"
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_users_on_account_id"
+    t.bigint "workspace_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true, where: "((provider IS NOT NULL) AND (uid IS NOT NULL))"
+    t.index ["workspace_id"], name: "index_users_on_workspace_id"
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -195,7 +188,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
   end
 
   create_table "webhooks", force: :cascade do |t|
-    t.bigint "account_id", null: false
     t.boolean "async", default: false
     t.jsonb "body"
     t.datetime "created_at", null: false
@@ -211,20 +203,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_154800) do
     t.string "url"
     t.bigint "webhookable_id"
     t.string "webhookable_type"
-    t.index ["account_id"], name: "index_webhooks_on_account_id"
+    t.bigint "workspace_id", null: false
     t.index ["webhookable_type", "webhookable_id"], name: "index_webhooks_on_webhookable"
+    t.index ["workspace_id"], name: "index_webhooks_on_workspace_id"
   end
 
-  add_foreign_key "accounts", "users"
+  create_table "workspaces", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_workspaces_on_user_id", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "api_keys", "accounts"
-  add_foreign_key "invitations", "accounts"
-  add_foreign_key "plans", "accounts"
+  add_foreign_key "api_keys", "workspaces"
+  add_foreign_key "invitations", "workspaces"
   add_foreign_key "plans", "plan_types"
   add_foreign_key "plans", "users"
-  add_foreign_key "static_pages", "accounts"
+  add_foreign_key "plans", "workspaces"
+  add_foreign_key "static_pages", "workspaces"
   add_foreign_key "taggings", "tags"
-  add_foreign_key "users", "accounts"
-  add_foreign_key "webhooks", "accounts"
+  add_foreign_key "users", "workspaces"
+  add_foreign_key "webhooks", "workspaces"
+  add_foreign_key "workspaces", "users"
 end

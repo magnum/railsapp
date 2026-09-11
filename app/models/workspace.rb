@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Account < ApplicationRecord
-  belongs_to :user, inverse_of: :owned_account
+class Workspace < ApplicationRecord
+  belongs_to :user, inverse_of: :owned_workspace
 
   has_many :users, dependent: :restrict_with_exception
   has_many :api_keys, dependent: :restrict_with_exception
@@ -17,14 +17,14 @@ class Account < ApplicationRecord
   scope :for_select, -> { includes(:user).order(:id) }
 
   def display_name
-    user&.full_name.presence || user&.email.presence || "Account ##{id}"
+    self.name || "Workspace ##{id}"
   end
 
   private
 
   def ensure_principal_is_member
-    return if user.blank? || user.account_id.present?
+    return if user.blank? || user.workspace_id.present?
 
-    user.update_column(:account_id, id)
+    user.update_column(:workspace_id, id)
   end
 end

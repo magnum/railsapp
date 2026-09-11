@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Invitation < ApplicationRecord
-  include Accountable
+  include Workspaceable
 
   attr_accessor :skip_validation
 

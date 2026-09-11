@@ -1,7 +1,7 @@
 module Admin
   class PlansController < Admin::ApplicationController
     def scoped_resource
-      @current_account.plans
+      @current_workspace.plans
     end
   end
 end

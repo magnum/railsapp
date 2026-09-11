@@ -1,7 +1,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     def scoped_resource
-      @current_account.users
+      @current_workspace.users
     end
   end
 end

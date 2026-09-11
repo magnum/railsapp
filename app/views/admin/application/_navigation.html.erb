@@ -23,14 +23,14 @@ as defined by the routes in the `admin/` namespace
   <%= link_to "Jobs", "/jobs", class: "navigation__link navigation__link--inactive" if current_user.admin? %>
 
   <div class="mt-4 mb-2">
-    <%= form_with url: select_account_path, method: :post do %>
-      <%= label_tag :account_id, t("views.admin.select_account"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
-      <%= select_tag :account_id,
+    <%= form_with url: select_workspace_path, method: :post do %>
+      <%= label_tag :workspace_id, t("views.admin.select_workspace"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
+      <%= select_tag :workspace_id,
             options_from_collection_for_select(
-              current_user.admin? ? Account.for_select : Account.for_select.where(id: @current_account&.id),
+              current_user.admin? ? Workspace.for_select : Workspace.for_select.where(id: @current_workspace&.id),
               :id,
               :display_name,
-              @current_account&.id
+              @current_workspace&.id
             ),
             disabled: !current_user.admin?,
             class: "w-full rounded-md border border-gray-300 px-2 py-1 text-sm",

@@ -56,7 +56,7 @@ en:
     admin:
       event_success: "%{event} completed successfully."
       event_fail: "%{event} failed: %{message}"
-      select_account: "Account"
+      select_workspace: "Workspace"
 
   authentication:
     require_sign_in: "You must be signed in to continue."
@@ -75,15 +75,15 @@ en:
 
   activerecord:
     models:
-      account:
-        one: "Account"
-        other: "Accounts"
+      workspace:
+        one: "Workspace"
+        other: "Workspaces"
     attributes:
-      account:
+      workspace:
         user: "Owner"
       user:
         id: "ID"
-        account: "Account"
+        workspace: "Workspace"
         firstname: "First name"
         lastname: "Last name"
         email: "Email"

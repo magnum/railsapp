@@ -2,7 +2,7 @@
 
 require "administrate/base_dashboard"
 
-class AccountDashboard < Administrate::BaseDashboard
+class WorkspaceDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     user: Field::BelongsTo,
@@ -31,7 +31,7 @@ class AccountDashboard < Administrate::BaseDashboard
 
   COLLECTION_FILTERS = {}.freeze
 
-  def display_resource(account)
-    account.display_name
+  def display_resource(workspace)
+    workspace.display_name
   end
 end

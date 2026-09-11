@@ -3,7 +3,7 @@
 class StaticPage < ApplicationRecord
   SLUG_PATTERN = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
 
-  include Accountable
+  include Workspaceable
   include AASM
 
   validates :slug, presence: true, uniqueness: true, format: { with: SLUG_PATTERN }
