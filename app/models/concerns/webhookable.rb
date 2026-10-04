@@ -18,7 +18,7 @@ module Webhookable
     Webhook.create!(
       webhookable: self,
       workspace: (workspace if respond_to?(:workspace)),
-      method: method,
+      method: method.to_s.downcase,
       url: url,
       body: body,
       headers: headers,

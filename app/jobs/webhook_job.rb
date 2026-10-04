@@ -8,7 +8,7 @@ class WebhookJob < ApplicationJob
     webhook.doCall!
     webhook.complete!
   rescue => e
-    webhook.error!(e)
+    webhook&.error!(e)
     raise e
   end
 end

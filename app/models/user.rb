@@ -2,6 +2,7 @@ class User < ApplicationRecord
   include Workspaceable
   include ApiKeyable
   include Plannable
+  include Webhookable
 
   has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
 

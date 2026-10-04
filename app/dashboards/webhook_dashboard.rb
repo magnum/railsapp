@@ -6,7 +6,7 @@ class WebhookDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     workspace: WorkspaceField.with_options(scope: -> { Workspace.for_select }),
-    webhookable: Field::Polymorphic,
+    webhookable: Field::Polymorphic.with_options(classes: [User]),
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),
     async: Field::Boolean,
     method: Field::String,

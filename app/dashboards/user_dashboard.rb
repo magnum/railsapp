@@ -11,6 +11,7 @@ class UserDashboard < Administrate::BaseDashboard
     id: Field::Number,
     workspace: WorkspaceField.with_options(scope: -> { Workspace.for_select }),
     api_keys: Field::HasMany,
+    webhooks: Field::HasMany.with_options(limit: 30),
     avatar_url: Field::String,
     email: Field::String,
     firstname: Field::String,
@@ -52,6 +53,7 @@ class UserDashboard < Administrate::BaseDashboard
     roles
     plans
     api_keys
+    webhooks
     created_at
     updated_at
   ].freeze

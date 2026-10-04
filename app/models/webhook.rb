@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "httparty"
+
 class Webhook < ApplicationRecord
   include Workspaceable
   include ValidationSkippable
@@ -74,15 +76,13 @@ class Webhook < ApplicationRecord
   def doCall!
     reset_response!
     request_url = url
-    request_headers = headers
-    request_body = body
-    request_method = method
+    request_headers = normalize_headers(headers)
+    request_body = normalize_body(body)
+    request_method = method.to_s.downcase
     if ENV["MOCK_WEBHOOKS"] == "true"
-      request_url = "https://postman-echo.com/#{request_method.to_s.downcase}"
-      request_body = request_body.to_json
-      request_headers = (request_headers || {}).merge({
-        "Content-Type" => "application/json"
-      })
+      request_url = "https://postman-echo.com/#{request_method}"
+      request_body = request_body.is_a?(String) ? request_body : request_body.to_json
+      request_headers = request_headers.merge("Content-Type" => "application/json")
     end
     response = HTTParty.send(
       request_method,
@@ -119,7 +119,36 @@ class Webhook < ApplicationRecord
 
   def response_body_json
     JSON.parse(read_attribute(:response_body))
-  rescue JSON::ParserError
+  rescue JSON::ParserError, TypeError
     nil
+  end
+
+  private
+
+  def normalize_headers(value)
+    parsed = parse_jsonish(value)
+    return {} unless parsed.is_a?(Hash)
+
+    parsed.stringify_keys
+  end
+
+  def normalize_body(value)
+    parse_jsonish(value)
+  end
+
+  def parse_jsonish(value)
+    case value
+    when String
+      stripped = value.strip
+      return value if stripped.blank?
+
+      JSON.parse(stripped)
+    when Hash
+      value
+    else
+      value
+    end
+  rescue JSON::ParserError
+    value
   end
 end
