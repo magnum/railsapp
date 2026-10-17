@@ -33,6 +33,8 @@ class BookmarksController < ApplicationController
     case type
     when "StaticPage"
       policy_scope(current_workspace.static_pages)
+    when "MenuItem"
+      MenuItem.where(active: true)
     when "Workspace"
       selectable_workspaces
     else

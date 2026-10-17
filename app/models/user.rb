@@ -45,6 +45,12 @@ class User < ApplicationRecord
     has_role?(:admin)
   end
 
+  def member_workspaces
+    return Workspace.for_select if admin?
+
+    Workspace.where(id: workspace_id)
+  end
+
   def is_editor?
     admin? || has_role?(:editor)
   end

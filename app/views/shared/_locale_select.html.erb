@@ -1,5 +1,6 @@
 <% current_locale = I18n.locale.to_s %>
 <select
+  id="locale"
   class="locale-select border border-gray-300 rounded px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
   onchange="if (this.value) window.location.href = this.value">
   <% I18n.available_locales.each do |loc| %>

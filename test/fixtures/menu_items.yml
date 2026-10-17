@@ -1,0 +1,37 @@
+menu:
+  name: menu
+  active: true
+  ord: 0
+  lft: 1
+  rgt: 8
+  depth: 0
+
+pages:
+  name: Pages
+  link: /static_pages
+  active: true
+  ord: 0
+  parent: menu
+  lft: 2
+  rgt: 3
+  depth: 1
+
+admin:
+  name: Admin
+  link: /admin
+  active: true
+  ord: 1
+  parent: menu
+  lft: 4
+  rgt: 5
+  depth: 1
+
+users:
+  name: Users
+  link: /users
+  active: true
+  ord: 2
+  parent: menu
+  lft: 6
+  rgt: 7
+  depth: 1

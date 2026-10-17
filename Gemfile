@@ -88,6 +88,7 @@ gem 'administrate-field-aasm'
 gem "administrate-field-nested_has_many", github: "magnum/administrate-field-nested_has_many"
 gem 'administrate-field-acts_as_taggable', github: "magnum/administrate-field-acts_as_taggable"
 gem "acts-as-taggable-on"
+gem "awesome_nested_set"
 # testing local gems
 #gem "administrate-field-nested_has_many", path: "../administrate-field-nested_has_many"
 #gem 'administrate-field-acts_as_taggable', path: "../administrate-field-acts_as_taggable"

@@ -30,33 +30,51 @@
   </head>
 
   <body class="min-h-screen bg-gray-50 font-sans flex flex-col">
-    <div class="flex">
-      <div class="p-4">
-        <%= link_to Settings.app.name, root_path, class: "font1 text-3xl md:text-4xl text-gray-900 hover:text-gray-700" %>
+    <header class="relative z-50 container mx-auto flex items-center justify-between px-5" data-controller="off-canvas">
+      <div class="py-4">
+        <%= link_to Settings.app.name, logo_href, class: "font1 text-3xl md:text-4xl text-gray-900 hover:text-gray-700" %>
       </div>
-      <div class="p-4 flex items-center gap-4 flex-1 justify-end">
+      <button
+        type="button"
+        class="relative z-[60] inline-flex items-center justify-center py-4 text-gray-800 md:hidden"
+        data-off-canvas-target="button"
+        data-action="off-canvas#toggle"
+        aria-expanded="false"
+        aria-controls="app-nav"
+        aria-label="<%= t("nav.menu") %>"
+        data-label-open="<%= t("nav.menu") %>"
+        data-label-close="<%= t("nav.close") %>">
+        <svg class="off-canvas-icon off-canvas-icon--open size-[2.1rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg class="off-canvas-icon off-canvas-icon--close size-[2.1rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+      <div class="off-canvas-backdrop" data-off-canvas-target="backdrop" data-action="click->off-canvas#close"></div>
+      <nav
+        id="app-nav"
+        class="off-canvas-panel"
+        data-off-canvas-target="panel"
+        data-action="click->off-canvas#closeIfLink"
+        aria-label="<%= t("nav.label") %>">
         <%= render "shared/locale_select" %>
         <% if signed_in? %>
-          <% if current_user.is_editor? %>
-            <%= link_to t("static_pages.pages_link"), static_pages_path, class: "hidden md:inline font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
+          <%= render "menu_items/shortcuts" %>
+          <%= render "menu_items/tree" %>
+          <%= link_to user_path(current_user), class: "flex min-w-0 max-w-full items-center gap-2" do %>
+            <span class="shrink-0"><%= render "users/avatar", user: current_user %></span>
+            <span class="min-w-0 max-w-24 truncate text-gray-600 lg:max-w-none lg:overflow-visible lg:whitespace-normal lg:break-all"><%= current_user.email %></span>
           <% end %>
-          <% if current_user.admin? %>
-            <%= link_to "Admin", admin_root_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
-            <%= link_to t("users.index.title"), users_path, class: "hidden md:inline  font-medium text-gray-700 hover:text-gray-900 hover:underline" %>
-          <% end %>
-          <%= link_to user_path(current_user), class: "flex items-center gap-2" do %>
-            <%= render "users/avatar", user: current_user %>
-            <span class="hidden md:inline text-gray-600"><%= current_user.email %></span>
-          <% end %>
-          <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: " font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline hover:underline" %>
+          <%= button_to t("sessions.sign_out"), sign_out_path, method: :delete, class: "font-medium text-gray-700 hover:text-gray-900 bg-transparent border-0 p-0 cursor-pointer inline hover:underline" %>
         <% else %>
-          <%= link_to t("sessions.sign_in"), sign_in_path, class: " font-medium text-gray-700 hover:text-gray-900" %>
+          <%= link_to t("sessions.sign_in"), sign_in_path, class: "font-medium text-gray-700 hover:text-gray-900" %>
         <% end %>
-      </div>
-    </div>
+      </nav>
+    </header>
 
     <% if flash.any? %>
-      <div class="px-4 pt-4">
+      <div class="container mx-auto px-5 pt-4">
         <%= render "shared/flashes" %>
       </div>
     <% end %>

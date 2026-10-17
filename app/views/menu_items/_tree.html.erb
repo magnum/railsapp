@@ -1,0 +1,64 @@
+<%
+  by_parent = local_assigns[:by_parent] || menu_items_grouped
+  show_bookmark = local_assigns.fetch(:show_bookmark, false)
+  with_workspaces = local_assigns[:with_workspaces]
+  workspaces = with_workspaces ? member_workspaces_for_menu : []
+  items = local_assigns.fetch(:items) do
+    (by_parent[nil] || []).select { |item| item.visible_to?(current_user, by_parent) }
+  end
+%>
+<% if items.any? || workspaces.any? || (with_workspaces && current_user.admin?) %>
+  <ul class="menu-tree">
+    <% if with_workspaces && current_user.admin? %>
+      <li class="menu-tree__item">
+        <div class="menu-tree__row">
+          <%= link_to "Admin", admin_root_path, class: "menu-tree__link" %>
+        </div>
+      </li>
+    <% end %>
+    <% if workspaces.any? %>
+      <li class="menu-tree__heading"><%= t("menu_items.workspaces") %></li>
+      <% workspaces.each do |workspace| %>
+        <li class="menu-tree__item">
+          <div class="menu-tree__row">
+            <%= button_to workspace.name,
+                  select_workspace_path,
+                  method: :post,
+                  params: { workspace_id: workspace.id },
+                  class: "menu-tree__link #{ "font-semibold" if workspace == current_workspace }",
+                  form_class: "contents",
+                  aria: { current: (workspace == current_workspace ? "true" : nil) } %>
+            <%= render "bookmarks/link", bookmarkable: workspace %>
+          </div>
+        </li>
+      <% end %>
+      <% if items.any? %>
+        <li class="menu-tree__separator" aria-hidden="true"><hr></li>
+      <% end %>
+    <% end %>
+    <% items.each do |item| %>
+      <% next unless item.visible_to?(current_user, by_parent) %>
+      <% children = (by_parent[item.id] || []).select { |child| child.visible_to?(current_user, by_parent) } %>
+      <% submenu = children.any? || (item.parent_id.nil? && member_workspaces_for_menu.any?) %>
+      <li class="menu-tree__item<%= " is-root" unless show_bookmark %><%= " has-children" if submenu %>">
+        <div class="menu-tree__row">
+          <% if item.link.present? %>
+            <%= link_to item.label, item.href_for(current_user), class: "menu-tree__link" %>
+          <% else %>
+            <span class="menu-tree__label" tabindex="0"><%= item.label %></span>
+          <% end %>
+          <% if show_bookmark %>
+            <%= render "bookmarks/link", bookmarkable: item %>
+          <% end %>
+        </div>
+        <% if submenu %>
+          <%= render "menu_items/tree",
+                items: children,
+                by_parent: by_parent,
+                show_bookmark: true,
+                with_workspaces: item.parent_id.nil? %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

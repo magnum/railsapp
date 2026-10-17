@@ -6,7 +6,7 @@ class BookmarkDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     user: Field::BelongsTo,
-    bookmarkable: Field::Polymorphic.with_options(classes: [ StaticPage, User, Workspace ]),
+    bookmarkable: Field::Polymorphic.with_options(classes: [ StaticPage, User, MenuItem, Workspace ]),
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze

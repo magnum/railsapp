@@ -34,6 +34,15 @@ en:
     welcome: "Welcome to your application."
     sign_in_prompt: "Sign in or create an account to continue."
 
+  nav:
+    menu: "Menu"
+    close: "Close"
+    label: "Main"
+
+  menu_items:
+    menu: "Menu"
+    workspaces: "Workspaces"
+
   views:
     common:
       or: "Or"
@@ -81,10 +90,15 @@ en:
       bookmark:
         one: "Bookmark"
         other: "Bookmarks"
+      menu_item:
+        one: "Menu item"
+        other: "Menu items"
     attributes:
       workspace:
         name: "Name"
         user: "Owner"
+      menu_item:
+        is_home: "Home"
       user:
         id: "ID"
         workspace: "Workspace"

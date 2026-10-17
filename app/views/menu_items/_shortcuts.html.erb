@@ -1,0 +1,14 @@
+<% items = bookmarked_menu_items %>
+<% if items.any? %>
+  <div class="menu-shortcuts">
+    <% items.each do |item| %>
+      <div class="menu-tree__row">
+        <% if item.link.present? %>
+          <%= link_to item.label, item.href_for(current_user), class: "menu-tree__link" %>
+        <% else %>
+          <span class="menu-tree__label"><%= item.label %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

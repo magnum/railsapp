@@ -17,6 +17,15 @@ it:
     welcome: "Benvenuto nella tua applicazione."
     sign_in_prompt: "Accedi o crea un account per continuare."
 
+  nav:
+    menu: "Menu"
+    close: "Chiudi"
+    label: "Principale"
+
+  menu_items:
+    menu: "Menu"
+    workspaces: "Workspace"
+
   views:
     common:
       or: "Oppure"
@@ -64,10 +73,15 @@ it:
       bookmark:
         one: "Segnalibro"
         other: "Segnalibri"
+      menu_item:
+        one: "Voce di menu"
+        other: "Voci di menu"
     attributes:
       workspace:
         name: "Nome"
         user: "Utente principale"
+      menu_item:
+        is_home: "Home"
       user:
         id: "ID"
         workspace: "Workspace"

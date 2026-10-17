@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_124200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_125300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_124200) do
     t.index ["signature"], name: "index_invitations_on_signature", unique: true
     t.index ["state"], name: "index_invitations_on_state"
     t.index ["workspace_id"], name: "index_invitations_on_workspace_id"
+  end
+
+  create_table "menu_items", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.integer "depth", default: 0, null: false
+    t.boolean "is_home", default: false, null: false
+    t.integer "lft", null: false
+    t.string "link"
+    t.string "name", null: false
+    t.integer "ord", default: 0, null: false
+    t.bigint "parent_id"
+    t.integer "rgt", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_home"], name: "index_menu_items_on_is_home", unique: true, where: "(is_home = true)"
+    t.index ["lft"], name: "index_menu_items_on_lft"
+    t.index ["parent_id", "ord"], name: "index_menu_items_on_parent_id_and_ord"
+    t.index ["parent_id"], name: "index_menu_items_on_parent_id"
+    t.index ["rgt"], name: "index_menu_items_on_rgt"
   end
 
   create_table "plan_types", force: :cascade do |t|
@@ -232,6 +251,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_124200) do
   add_foreign_key "api_keys", "workspaces"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "invitations", "workspaces"
+  add_foreign_key "menu_items", "menu_items", column: "parent_id"
   add_foreign_key "plans", "plan_types"
   add_foreign_key "plans", "users"
   add_foreign_key "plans", "workspaces"
