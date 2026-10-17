@@ -24,7 +24,10 @@ as defined by the routes in the `admin/` namespace
 
   <div class="mt-4 mb-2">
     <%= form_with url: select_workspace_path, method: :post do %>
-      <%= label_tag :workspace_id, t("views.admin.select_workspace"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
+      <div class="flex items-center gap-2">
+        <%= label_tag :workspace_id, t("views.admin.select_workspace"), class: "pb-1 block text-xs font-medium tracking-wider text-gray-500 uppercase" %>
+        <%= render "bookmarks/link", bookmarkable: @current_workspace if @current_workspace %>
+      </div>
       <%= select_tag :workspace_id,
             options_from_collection_for_select(
               current_user.admin? ? Workspace.for_select : Workspace.for_select.where(id: @current_workspace&.id),

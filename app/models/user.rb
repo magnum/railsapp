@@ -5,6 +5,8 @@ class User < ApplicationRecord
   include Webhookable
 
   has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
+  has_many :bookmarks, dependent: :destroy
+  has_many :received_bookmarks, class_name: "Bookmark", as: :bookmarkable, dependent: :destroy
 
   rolify
   has_secure_password validations: false

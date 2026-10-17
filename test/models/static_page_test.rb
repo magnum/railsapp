@@ -24,6 +24,13 @@ class StaticPageTest < ActiveSupport::TestCase
     assert_nil StaticPage.resolve_template("missing-page")
   end
 
+  test "accepts bookmarks through the concern" do
+    bookmark = Bookmark.create!(user: users(:one), bookmarkable: @page)
+
+    assert_equal [ bookmark ], @page.bookmarks
+    assert_not @page.bookmarkable_single?
+  end
+
   test "is_editor includes admin and editor roles" do
     admin = users(:one)
     admin.add_role(:admin)

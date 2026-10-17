@@ -78,6 +78,9 @@ en:
       workspace:
         one: "Workspace"
         other: "Workspaces"
+      bookmark:
+        one: "Bookmark"
+        other: "Bookmarks"
     attributes:
       workspace:
         name: "Name"
@@ -131,6 +134,10 @@ en:
     errors_prohibited:
       one: "1 error prohibited this account from being saved:"
       other: "%{count} errors prohibited this account from being saved:"
+
+  bookmarks:
+    title: "Bookmarks"
+    toggle: "Bookmark"
 
   static_pages:
     index_title: "Static pages"

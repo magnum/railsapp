@@ -1,5 +1,6 @@
-<div>
-  <div class="hidden md:grid md:grid-cols-[4fr_4fr_2fr_3fr] gap-4 border-b border-gray-200 bg-gray-50 px-6 py-3">
+<div class="static-pages-list">
+  <div class="hidden md:grid md:grid-cols-[auto_4fr_4fr_2fr_3fr] gap-4 border-b border-gray-200 bg-gray-50 px-6 py-3">
+    <div class="flex items-center"><%= render "bookmarks/link", disabled: true %></div>
     <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.slug") %></div>
     <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.title") %></div>
     <div class="font-medium tracking-wider text-gray-500 uppercase"><%= t("static_pages.state") %></div>
@@ -9,7 +10,10 @@
   <div>
     <% if static_pages.any? %>
       <% static_pages.each do |page| %>
-        <div class="mb-4 grid grid-cols-1 items-center gap-4 bg-white px-6 py-4 hover:bg-gray-100 md:mb-0 md:grid-cols-[4fr_4fr_2fr_3fr] md:shadow-sm">
+        <div class="static-page-row mb-4 grid grid-cols-1 items-center gap-4 bg-white px-6 py-4 hover:bg-gray-100 md:mb-0 md:grid-cols-[auto_4fr_4fr_2fr_3fr] md:shadow-sm">
+          <div class="flex items-center md:justify-start">
+            <%= render "bookmarks/link", bookmarkable: page %>
+          </div>
           <div class="flex md:justify-start">
             <label class="list-label min-w-32"><%= t("static_pages.slug") %></label>
             <span class="text-base"><%= page.slug %></span>

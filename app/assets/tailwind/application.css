@@ -93,3 +93,24 @@ body {
 .list-label {
   @apply  font-medium text-gray-500 uppercase tracking-wider md:hidden;
 }
+
+.bookmark-link {
+  @apply ml-auto inline-flex shrink-0 cursor-pointer border-0 bg-transparent p-0 text-gray-300;
+}
+
+.bookmark-link.is-starred {
+  @apply text-yellow-400;
+}
+
+.bookmark-link.is-disabled {
+  @apply cursor-default opacity-40;
+}
+
+.static-pages-list .bookmark-link {
+  @apply ml-0;
+}
+
+.bookmark-link__icon {
+  @apply h-6 w-6;
+  fill: currentColor;
+}

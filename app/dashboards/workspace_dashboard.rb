@@ -8,6 +8,7 @@ class WorkspaceDashboard < Administrate::BaseDashboard
     name: Field::String,
     user: Field::BelongsTo,
     users: Field::HasMany,
+    bookmarks: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -24,6 +25,7 @@ class WorkspaceDashboard < Administrate::BaseDashboard
     name
     user
     users
+    bookmarks
     created_at
     updated_at
   ].freeze

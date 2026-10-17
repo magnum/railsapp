@@ -19,6 +19,7 @@ class UserDashboard < Administrate::BaseDashboard
     provider: Field::String,
     roles: Field::HasMany,
     plans: Field::HasMany,
+    bookmarks: Field::HasMany,
     uid: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
@@ -52,6 +53,7 @@ class UserDashboard < Administrate::BaseDashboard
     uid
     roles
     plans
+    bookmarks
     api_keys
     webhooks
     created_at

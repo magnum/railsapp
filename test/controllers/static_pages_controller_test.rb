@@ -72,7 +72,51 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "form"
   end
 
+  test "editor lists static pages with bookmark stars" do
+    user = users(:one)
+    user.update!(password: "password1", password_confirmation: "password1")
+    user.add_role(:admin)
+    sign_in_as(user)
+
+    get static_pages_path
+
+    assert_response :success
+    assert_select "h2", text: I18n.t("bookmarks.title"), count: 0
+    assert_select ".static-pages-list span.bookmark-link.is-disabled", count: 1
+    assert_select ".static-page-row button.bookmark-link[data-bookmark-link-type-value=StaticPage][data-bookmark-link-id-value=?]:not(.is-starred)", static_pages(:privacy).id.to_s
+  end
+
+  test "bookmarked static pages are listed before the results" do
+    user = users(:one)
+    user.update!(password: "password1", password_confirmation: "password1")
+    user.add_role(:admin)
+    sign_in_as(user)
+    privacy = static_pages(:privacy)
+    terms = static_pages(:terms)
+    cookie = static_pages(:cookie)
+    Bookmark.create!(user: users(:two), bookmarkable: privacy)
+    Bookmark.create!(user: user, bookmarkable: cookie)
+    Bookmark.create!(user: user, bookmarkable: terms)
+
+    get static_pages_path
+
+    assert_response :success
+    assert_select "section.static-page-bookmarks h2", text: I18n.t("bookmarks.title")
+    rows = css_select("section.static-page-bookmarks .static-page-row")
+    assert_equal [ terms.title, cookie.title ], rows.map { |row| row.at("a").text }
+    assert_select "section.static-page-bookmarks a", text: privacy.title, count: 0
+    assert_select "section.static-page-bookmarks button.bookmark-link.is-starred", count: 2
+    assert_select ".static-pages-list", count: 2
+    privacy_star = css_select(".static-pages-list").last.at_css("button.bookmark-link[data-bookmark-link-id-value='#{privacy.id}']")
+    assert privacy_star
+    assert_not_includes privacy_star["class"], "is-starred"
+  end
+
   private
+
+  def sign_in_as(user)
+    post sign_in_path, params: { email: user.email, password: "password1" }
+  end
 
   def assert_google_user_data_disclosures
     assert_select "h2#google-user-data"

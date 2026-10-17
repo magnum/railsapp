@@ -11,6 +11,8 @@ by providing a `content_for(:javascript)` block.
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.3.0/jsoneditor.min.js" integrity="sha512-TY95hQtaRsYMY6umssOX69V3eIN5lmnW9rEpGSxpyDPzS+E6IAyS9L7QAUboI3hRYuoHB8GAAr7OBxevLdryzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<%= javascript_importmap_tags %>
+
 <% Administrate::Engine.javascripts.each do |js_path| %>
   <%= javascript_include_tag js_path, "data-turbo-track": "reload", defer: true , type: "module" %>
 <% end %>

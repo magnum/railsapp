@@ -10,7 +10,9 @@ class StaticPagesController < ApplicationController
 
   def index
     authorize StaticPage
-    @static_pages = policy_scope(current_workspace.static_pages).order(:slug)
+    scope = policy_scope(current_workspace.static_pages)
+    @bookmarked_static_pages = bookmarked_static_pages_for(scope)
+    @static_pages = scope.order(:slug)
   end
 
   def show
@@ -81,6 +83,13 @@ class StaticPagesController < ApplicationController
 
   def authorize_static_page
     authorize @static_page
+  end
+
+  def bookmarked_static_pages_for(scope)
+    ids = current_user.bookmarks.where(bookmarkable_type: "StaticPage").order(created_at: :desc).pluck(:bookmarkable_id)
+    return scope.none if ids.empty?
+
+    scope.where(id: ids).in_order_of(:id, ids)
   end
 
   def static_page_params

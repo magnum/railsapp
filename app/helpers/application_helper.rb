@@ -30,4 +30,15 @@ module ApplicationHelper
   def badge(state, value = nil)
     content_tag(:span, value || state.to_s.humanize, class: "whitespace-nowrap rounded-md #{state_bg_color(state)} px-2 py-1 text-md font-medium #{state_text_color(state)}")
   end
+
+  def bookmarked?(record)
+    return false unless current_user && record
+
+    bookmark_ids_for(record.class.name).include?(record.id)
+  end
+
+  def bookmark_ids_for(type)
+    @bookmark_ids_for ||= {}
+    @bookmark_ids_for[type] ||= current_user.bookmarks.where(bookmarkable_type: type).order(created_at: :desc).pluck(:bookmarkable_id)
+  end
 end

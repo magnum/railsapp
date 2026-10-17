@@ -23,6 +23,16 @@ class WorkspaceTest < ActiveSupport::TestCase
     assert_equal "Acme", workspace.name
   end
 
+  test "accepts bookmarks through the concern" do
+    bookmark = Bookmark.create!(user: users(:one), bookmarkable: workspaces(:one))
+
+    assert_equal [ bookmark ], workspaces(:one).bookmarks
+    assert_includes Workspace.included_modules, Bookmarkable
+    assert_includes StaticPage.included_modules, Bookmarkable
+    assert_not static_pages(:privacy).bookmarkable_single?
+    assert workspaces(:one).bookmarkable_single?
+  end
+
   test "assigns the principal as a member when they have no workspace" do
     user = User.create!(
       firstname: "Ada",

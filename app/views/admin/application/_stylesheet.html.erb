@@ -93,4 +93,27 @@ by providing a `content_for(:stylesheet)` block.
   textarea[name="document[data]"]{
     height: 400px;
   }
+
+  .bookmark-link {
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-left: auto;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #d1d5db;
+  }
+  .bookmark-link.is-starred {
+    color: #facc15;
+  }
+  .bookmark-link.is-disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
+  .bookmark-link__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+  }
 </style>

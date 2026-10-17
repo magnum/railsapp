@@ -61,6 +61,9 @@ it:
       workspace:
         one: "Workspace"
         other: "Workspace"
+      bookmark:
+        one: "Segnalibro"
+        other: "Segnalibri"
     attributes:
       workspace:
         name: "Nome"
@@ -113,6 +116,10 @@ it:
     errors_prohibited:
       one: "1 errore ha impedito il salvataggio dell'account:"
       other: "%{count} errori hanno impedito il salvataggio dell'account:"
+
+  bookmarks:
+    title: "Segnalibri"
+    toggle: "Segna"
 
   static_pages:
     index_title: "Pagine statiche"

@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Workspace < ApplicationRecord
+  include Bookmarkable
+
+  def bookmarkable_single?
+    true
+  end
+
   belongs_to :user, inverse_of: :owned_workspace
 
   has_many :users, dependent: :restrict_with_exception

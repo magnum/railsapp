@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_180800) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_124200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -66,6 +66,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_180800) do
     t.index ["bearer_type", "bearer_id"], name: "index_api_keys_on_bearer"
     t.index ["token_digest"], name: "index_api_keys_on_token_digest", unique: true
     t.index ["workspace_id"], name: "index_api_keys_on_workspace_id"
+  end
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.bigint "bookmarkable_id", null: false
+    t.string "bookmarkable_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["bookmarkable_type", "bookmarkable_id"], name: "index_bookmarks_on_bookmarkable"
+    t.index ["user_id", "bookmarkable_type", "bookmarkable_id"], name: "index_bookmarks_on_user_and_bookmarkable", unique: true
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -219,6 +230,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_180800) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_keys", "workspaces"
+  add_foreign_key "bookmarks", "users"
   add_foreign_key "invitations", "workspaces"
   add_foreign_key "plans", "plan_types"
   add_foreign_key "plans", "users"

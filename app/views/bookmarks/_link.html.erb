@@ -1,0 +1,27 @@
+<% disabled = local_assigns.fetch(:disabled, false) %>
+<% unless disabled %>
+  <% return unless current_user && policy(Bookmark.new(user: current_user, bookmarkable: bookmarkable)).create? %>
+<% end %>
+<% starred = !disabled && bookmarked?(bookmarkable) %>
+<% classes = ["bookmark-link", ("is-starred" if starred), ("is-disabled" if disabled)].compact.join(" ") %>
+<% star_icon = capture do %>
+  <svg class="bookmark-link__icon" viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M10 2.4l1.9 4.1 4.5.6-3.3 3.2.8 4.5L10 12.7 5.1 15.3l.8-4.5L2.6 7.1l4.5-.6L10 2.4z" />
+  </svg>
+<% end %>
+<% if disabled %>
+  <span class="<%= classes %>" aria-hidden="true"><%= star_icon %></span>
+<% else %>
+  <button
+    type="button"
+    class="<%= classes %>"
+    data-controller="bookmark-link"
+    data-bookmark-link-url-value="<%= toggle_bookmark_path %>"
+    data-bookmark-link-type-value="<%= bookmarkable.class.name %>"
+    data-bookmark-link-id-value="<%= bookmarkable.id %>"
+    data-action="click->bookmark-link#toggle:stop"
+    aria-pressed="<%= starred %>"
+    aria-label="<%= t("bookmarks.toggle") %>">
+    <%= star_icon %>
+  </button>
+<% end %>

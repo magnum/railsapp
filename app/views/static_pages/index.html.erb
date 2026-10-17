@@ -4,5 +4,12 @@
     <%= link_to t("static_pages.new_page"), new_static_page_path, class: "btn-primary" %>
   </div>
 
+  <% if @bookmarked_static_pages.any? %>
+    <section class="static-page-bookmarks mb-8">
+      <h2 class="mb-4 text-2xl font-semibold text-gray-900"><%= t("bookmarks.title") %></h2>
+      <%= render "list", static_pages: @bookmarked_static_pages %>
+    </section>
+  <% end %>
+
   <%= render "list", static_pages: @static_pages %>
 </div>

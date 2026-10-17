@@ -9,6 +9,7 @@ class StaticPageDashboard < Administrate::BaseDashboard
     slug: Field::String,
     title: Field::String,
     state: Field::Aasm.with_options(searchable: true, searchable_field: :name),
+    bookmarks: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     content: Field::Text
@@ -27,6 +28,7 @@ class StaticPageDashboard < Administrate::BaseDashboard
     slug
     title
     state
+    bookmarks
     content
     created_at
     updated_at

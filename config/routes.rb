@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :workspaces
+    resources :bookmarks
     resources :users
     resources :roles
     resources :api_keys
@@ -52,6 +53,7 @@ Rails.application.routes.draw do
   post "invitations/consume", to: "invitations#consume"
 
   resources :users, only: [ :index, :show, :edit, :update ]
+  post "bookmarks/toggle", to: "bookmarks#toggle", as: :toggle_bookmark
 
   namespace :api do
     concerns :apiable
