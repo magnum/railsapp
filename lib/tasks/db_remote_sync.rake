@@ -18,6 +18,8 @@
 #   bin/rails db:remote_pull
 #   DB_SYNC_PRIMARY_ONLY=1 bin/rails db:remote_pull
 #   REMOTE_DB_SSH=deploy@example.com bin/rails db:remote_pull
+#   bin/rails db:remote_push
+#   DB_SYNC_PRIMARY_ONLY=1 bin/rails db:remote_push
 
 require "shellwords"
 require "fileutils"
@@ -56,6 +58,25 @@ module DbRemoteSync
 
     service = yaml["service"]
     "#{service}-db" if service.present?
+  end
+
+  def remote_psql(ssh_target, container, pg_user, password, sql)
+    remote_docker(ssh_target, container, password, [
+      "psql", "-U", pg_user, "-d", "postgres", "-v", "ON_ERROR_STOP=1", "-c", sql
+    ])
+  end
+
+  def remote_pg_restore(ssh_target, container, pg_user, password, database, dump_path)
+    remote_docker(ssh_target, container, password, [
+      "pg_restore", "-U", pg_user, "-d", database, "--no-owner", "--no-acl"
+    ], in: dump_path.to_s)
+  end
+
+  def remote_docker(ssh_target, container, password, command, **options)
+    exec_prefix = ["docker", "exec", "-i"]
+    exec_prefix += ["-e", "PGPASSWORD=#{password}"] if password
+    remote_cmd = Shellwords.shelljoin(exec_prefix + [container] + command)
+    system("ssh", ssh_target, remote_cmd, **options)
   end
 end
 
@@ -179,5 +200,105 @@ namespace :db do
     end
 
     puts "\n==> Remote pull complete. Run bin/rails db:migrate if schema differs from production."
+  end
+
+  desc "Dump local PostgreSQL and pg_restore into the remote DB (development only; overwrites production)"
+  task remote_push: :environment do
+    if Rails.env.production?
+      abort "Refusing to run in production. Use development (or another non-prod env)."
+    end
+
+    ssh_target = ENV["REMOTE_DB_SSH"].presence ||
+      DbRemoteSync.remote_db_ssh_default_from_deploy ||
+      abort("Set REMOTE_DB_SSH or define accessories.db.host in config/deploy.yml")
+    container_from_deploy = DbRemoteSync.remote_pg_container_default_from_deploy.presence
+    container = ENV["REMOTE_PG_CONTAINER"].presence ||
+      container_from_deploy ||
+      "railsapp-db"
+    pg_user = ENV.fetch("REMOTE_PG_USER", "postgres")
+    optional_pg_password = ENV["REMOTE_POSTGRES_PASSWORD"].presence
+    primary_only = ENV["DB_SYNC_PRIMARY_ONLY"].present?
+
+    roles = primary_only ? %w[primary] : %w[primary cache queue cable]
+
+    pairs = roles.filter_map do |name|
+      prod = ActiveRecord::Base.configurations.configs_for(env_name: "production", name: name)
+      dev = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: name)
+      next unless prod && dev
+      [name, prod, dev]
+    end
+
+    if pairs.empty?
+      abort "No database config pairs found. Check config/database.yml production / #{Rails.env}."
+    end
+
+    ssh_source = ENV["REMOTE_DB_SSH"].present? ? "env" : "config/deploy.yml"
+    container_source = if ENV["REMOTE_PG_CONTAINER"].present?
+      "env"
+    elsif container_from_deploy
+      "config/deploy.yml"
+    else
+      "default"
+    end
+
+    puts <<~WARN
+
+      Remote push will use:
+        REMOTE_DB_SSH         #{ssh_target}  (#{ssh_source})
+        REMOTE_PG_CONTAINER   #{container}  (#{container_source})
+        REMOTE_PG_USER        #{pg_user}
+
+      This will OVERWRITE remote production database(s):
+      #{pairs.map { |_, prod, dev| "  - #{dev.database}  ->  #{prod.database}" }.join("\n")}
+
+      Type yes to continue:
+    WARN
+    abort "Aborted." unless $stdin.gets.to_s.strip.casecmp?("yes")
+
+    dump_dir = Rails.root.join("tmp", "db_remote_sync")
+    FileUtils.mkdir_p(dump_dir)
+    timestamp = Time.zone.now.strftime("%Y%m%d_%H%M%S")
+
+    pairs.each do |role, prod, dev|
+      prod_db = prod.database
+      dev_db = dev.database
+      dump_path = dump_dir.join("#{role}_#{timestamp}.dump")
+
+      puts "\n==> [#{role}] pg_dump #{dev_db} (local) -> #{dump_path}"
+      unless system("pg_dump", "-d", dev_db, "--no-owner", "--no-acl", "-F", "c", "-f", dump_path.to_s)
+        FileUtils.rm_f(dump_path)
+        abort "pg_dump failed (#{role})"
+      end
+
+      if !File.exist?(dump_path) || File.size(dump_path).zero?
+        abort "Dump file missing or empty: #{dump_path}"
+      end
+
+      puts "    #{File.size(dump_path)} bytes"
+      puts "==> [#{role}] replace remote #{prod_db}"
+
+      quoted_db = %("#{prod_db.gsub('"', '""')}")
+      literal_db = "'#{prod_db.gsub("'", "''")}'"
+      terminate_sql = <<~SQL.squish
+        SELECT pg_terminate_backend(pid)
+        FROM pg_stat_activity
+        WHERE datname = #{literal_db} AND pid <> pg_backend_pid();
+      SQL
+
+      DbRemoteSync.remote_psql(ssh_target, container, pg_user, optional_pg_password, terminate_sql)
+      DbRemoteSync.remote_psql(ssh_target, container, pg_user, optional_pg_password, "DROP DATABASE IF EXISTS #{quoted_db};") ||
+        abort("Failed to DROP DATABASE #{prod_db}")
+      DbRemoteSync.remote_psql(ssh_target, container, pg_user, optional_pg_password, "CREATE DATABASE #{quoted_db};") ||
+        abort("Failed to CREATE DATABASE #{prod_db}")
+
+      puts "==> [#{role}] pg_restore -> #{prod_db} (remote)"
+      unless DbRemoteSync.remote_pg_restore(ssh_target, container, pg_user, optional_pg_password, prod_db, dump_path)
+        abort "pg_restore failed for #{prod_db}"
+      end
+
+      puts "    done."
+    end
+
+    puts "\n==> Remote push complete."
   end
 end
