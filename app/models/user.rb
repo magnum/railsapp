@@ -20,18 +20,52 @@ class User < ApplicationRecord
 
   after_create :ensure_owned_workspace, :create_default_plan
 
-  def self.from_omniauth(auth, workspace: nil)
-    where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
-      user.email = auth.info.email
-      user.firstname = auth.info.first_name.presence || auth.info.name&.split&.first || "User"
-      user.lastname = auth.info.last_name.presence || auth.info.name&.split&.last || "Name"
-      user.avatar_url = auth.info.image
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.workspace = workspace if user.new_record? && workspace
-      user.save!
-    end
+  def self.find_for_omniauth(auth)
+    find_by(provider: auth.provider, uid: auth.uid) || find_by_omniauth_email(auth)
   end
+
+  def self.from_omniauth(auth, workspace: nil)
+    user = find_for_omniauth(auth) || new
+    previously_linked = user.persisted? && user.provider == auth.provider
+
+    if user.new_record?
+      user.email = auth.info.email
+      user.firstname = omniauth_firstname(auth)
+      user.lastname = omniauth_lastname(auth)
+      user.workspace = workspace if workspace
+    elsif previously_linked
+      user.email = auth.info.email if auth.info.email.present?
+      user.firstname = omniauth_firstname(auth)
+      user.lastname = omniauth_lastname(auth)
+    end
+
+    if auth.info.image.present? && (user.new_record? || previously_linked || user.avatar_url.blank?)
+      user.avatar_url = auth.info.image
+    end
+
+    user.provider = auth.provider
+    user.uid = auth.uid
+    user.save!
+    user
+  end
+
+  def self.find_by_omniauth_email(auth)
+    email = auth.info.email.to_s.strip.downcase
+    return if email.blank?
+
+    where("LOWER(email) = ?", email).first
+  end
+  private_class_method :find_by_omniauth_email
+
+  def self.omniauth_firstname(auth)
+    auth.info.first_name.presence || auth.info.name&.split&.first || "User"
+  end
+  private_class_method :omniauth_firstname
+
+  def self.omniauth_lastname(auth)
+    auth.info.last_name.presence || auth.info.name&.split&.last || "Name"
+  end
+  private_class_method :omniauth_lastname
 
   def google_connected?
     provider == "google_oauth2"
