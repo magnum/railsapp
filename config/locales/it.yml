@@ -83,6 +83,7 @@ it:
     two_factor_code: "Codice"
     two_factor_invalid: "Il codice non è valido."
     two_factor_expired: "Il tentativo di accesso è scaduto. Accedi di nuovo."
+    two_factor_locked: "Troppi codici errati. Attendi 15 minuti e poi accedi di nuovo."
     no_account: "Non hai un account?"
 
   test_email:
@@ -180,7 +181,11 @@ it:
       download: "Scarica backup-codes.txt"
       saved: "Ho salvato i codici"
       disable: "Rimuovi codice"
+      disable_help: "Inserisci un codice attuale dell'app authenticator. Se non hai più l'app, inserisci un codice di backup: viene usato una sola volta e poi l'autenticazione a due fattori viene rimossa. Senza uno dei due, l'account resta protetto."
+      disable_code: "Codice authenticator o di backup"
+      disable_invalid: "Il codice non è valido. L'autenticazione a due fattori resta attiva."
       disable_confirm: "Rimuovere l'autenticazione a due fattori da questo account?"
+      locked: "Troppi codici errati. Attendi 15 minuti prima di riprovare."
       backup_codes_unavailable: "Questi codici di backup non sono più disponibili."
     pass_keys:
       title: "Passkey"

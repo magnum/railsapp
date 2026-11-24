@@ -64,17 +64,88 @@ module Users
       assert_equal @user.id, session[:user_id]
     end
 
-    test "removing the code stops asking for a second factor" do
+    test "removing the code requires a fresh factor and then stops asking for it" do
       sign_in_as(@user)
       enable_two_factor(@user)
+      delete backup_codes_user_two_factor_path(@user)
+
+      get user_path(@user)
+      assert_select "form[action='#{user_two_factor_path(@user)}'] input[name='otp_code']"
 
       delete user_two_factor_path(@user)
+      assert_redirected_to user_path(@user)
+      assert @user.reload.two_factor_active?
+
+      backup = "ABCD2345"
+      @user.backup_codes.create!(code_digest: Digest::SHA256.hexdigest(backup))
+      delete user_two_factor_path(@user), params: { otp_code: backup.downcase }
       assert_redirected_to user_path(@user)
       assert_not @user.reload.two_factor_active?
       assert_equal 0, @user.backup_codes.count
 
+      sign_in_as(@user)
+      enable_two_factor(@user)
+      travel 30.seconds do
+        delete user_two_factor_path(@user), params: { otp_code: ROTP::TOTP.new(@user.reload.otp_secret).now }
+      end
+      assert_redirected_to user_path(@user)
+      assert_not @user.reload.two_factor_active?
+
       delete sign_out_path
       post sign_in_path, params: { email: @user.email, password: "password1" }
+      assert_redirected_to root_path
+      assert_equal @user.id, session[:user_id]
+    end
+
+    test "repeated second-factor failures lock the account outside the session" do
+      sign_in_as(@user)
+      enable_two_factor(@user)
+      delete sign_out_path
+      post sign_in_path, params: { email: @user.email, password: "password1" }
+      assert_redirected_to sign_in_two_factor_path
+
+      TwoFactorAuthenticatable::OTP_MAX_ATTEMPTS.times do |index|
+        post sign_in_two_factor_path, params: { otp_code: "000000" }
+        if index + 1 == TwoFactorAuthenticatable::OTP_MAX_ATTEMPTS
+          assert_redirected_to sign_in_path
+        else
+          assert_response :unprocessable_entity
+        end
+      end
+      assert_nil session[:pending_2fa_user_id]
+      assert @user.reload.otp_locked_until.future?
+
+      post sign_in_path, params: { email: @user.email, password: "password1" }
+      assert_redirected_to sign_in_path
+      assert_nil session[:user_id]
+      assert_nil session[:pending_2fa_user_id]
+
+      travel TwoFactorAuthenticatable::OTP_LOCKOUT + 1.second do
+        post sign_in_path, params: { email: @user.email, password: "password1" }
+        assert_redirected_to sign_in_two_factor_path
+        assert_equal 0, @user.reload.otp_failed_attempts
+      end
+    end
+
+    test "an unreadable authenticator secret still requires the second factor" do
+      sign_in_as(@user)
+      enable_two_factor(@user)
+      backup = @user.backup_codes.first
+      known = "WXYZ2345"
+      backup.update!(code_digest: Digest::SHA256.hexdigest(known))
+      @user.update_columns(otp_secret_ciphertext: "not-a-valid-secret")
+      assert @user.reload.two_factor_active?
+      assert_nil @user.otp_secret
+
+      delete sign_out_path
+      post sign_in_path, params: { email: @user.email, password: "password1" }
+      assert_redirected_to sign_in_two_factor_path
+
+      post sign_in_two_factor_path, params: { otp_code: "000000" }
+      assert_response :unprocessable_entity
+      assert_nil session[:user_id]
+
+      post sign_in_two_factor_path, params: { otp_code: known }
       assert_redirected_to root_path
       assert_equal @user.id, session[:user_id]
     end

@@ -8,6 +8,8 @@ module TwoFactorAuthenticatable
   BACKUP_CODE_COUNT = 10
   BACKUP_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
   BACKUP_CODE_LENGTH = 8
+  OTP_MAX_ATTEMPTS = 5
+  OTP_LOCKOUT = 15.minutes
 
   included do
     has_many :backup_codes, class_name: "UserBackupCode", dependent: :destroy
@@ -40,7 +42,12 @@ module TwoFactorAuthenticatable
   end
 
   def two_factor_active?
-    otp_enabled_at.present? && otp_secret.present?
+    otp_enabled_at.present?
+  end
+
+  def two_factor_locked?
+    release_expired_two_factor_lock!
+    otp_locked_until.present? && otp_locked_until.future?
   end
 
   def two_factor_required?
@@ -109,9 +116,27 @@ module TwoFactorAuthenticatable
         otp_secret: nil,
         otp_pending_secret: nil,
         otp_enabled_at: nil,
-        otp_last_used_at: nil
+        otp_last_used_at: nil,
+        otp_failed_attempts: 0,
+        otp_locked_until: nil
       )
     end
+  end
+
+  def register_two_factor_failure!
+    with_lock do
+      release_expired_two_factor_lock!
+      self.otp_failed_attempts += 1
+      self.otp_locked_until = OTP_LOCKOUT.from_now if otp_failed_attempts >= OTP_MAX_ATTEMPTS
+      save!
+      otp_locked_until.present? && otp_locked_until.future?
+    end
+  end
+
+  def clear_two_factor_failures!
+    return if otp_failed_attempts.zero? && otp_locked_until.blank?
+
+    update!(otp_failed_attempts: 0, otp_locked_until: nil)
   end
 
   def authenticate_two_factor!(code)
@@ -142,20 +167,30 @@ module TwoFactorAuthenticatable
   private
 
   def verify_totp!(code)
-    return false if otp_secret.blank?
+    with_lock do
+      return false if otp_secret.blank?
 
-    options = { drift_behind: 30, drift_ahead: 30 }
-    options[:after] = otp_last_used_at.to_i if otp_last_used_at.present?
-    timestamp = totp_for(otp_secret).verify(code, **options)
-    return false unless timestamp
+      options = { drift_behind: 30, drift_ahead: 30 }
+      options[:after] = otp_last_used_at.to_i if otp_last_used_at.present?
+      timestamp = totp_for(otp_secret).verify(code, **options)
+      return false unless timestamp
 
-    update_columns(otp_last_used_at: Time.zone.at(timestamp), updated_at: Time.current)
-    true
+      update_columns(otp_last_used_at: Time.zone.at(timestamp), updated_at: Time.current)
+      true
+    end
   end
 
   def consume_backup_code!(code)
     digest = Digest::SHA256.hexdigest(self.class.normalize_backup_code(code))
-    backup_codes.where(code_digest: digest).delete_all == 1
+    with_lock do
+      backup_codes.where(code_digest: digest).delete_all == 1
+    end
+  end
+
+  def release_expired_two_factor_lock!
+    return if otp_locked_until.blank? || otp_locked_until.future?
+
+    update!(otp_failed_attempts: 0, otp_locked_until: nil)
   end
 
   def totp_for(secret)

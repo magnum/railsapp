@@ -78,9 +78,15 @@ class SessionsController < ApplicationController
 
   def two_factor
     @user = pending_two_factor_user
-    return if @user
+    if @user.nil?
+      redirect_to sign_in_path, alert: t("sessions.two_factor_expired")
+      return
+    end
 
-    redirect_to sign_in_path, alert: t("sessions.two_factor_expired")
+    return unless @user.two_factor_locked?
+
+    clear_pending_two_factor
+    redirect_to sign_in_path, alert: t("sessions.two_factor_locked")
   end
 
   def passkey_options
@@ -105,10 +111,20 @@ class SessionsController < ApplicationController
       return
     end
 
+    if @user.two_factor_locked?
+      clear_pending_two_factor
+      redirect_to sign_in_path, alert: t("sessions.two_factor_locked"), status: :see_other
+      return
+    end
+
     if @user.authenticate_two_factor!(params[:otp_code])
+      @user.clear_two_factor_failures!
       clear_pending_two_factor
       session[:user_id] = @user.id
       redirect_to root_path, notice: t("sessions.signed_in"), status: :see_other
+    elsif @user.register_two_factor_failure!
+      clear_pending_two_factor
+      redirect_to sign_in_path, alert: t("sessions.two_factor_locked"), status: :see_other
     else
       flash.now[:alert] = t("sessions.two_factor_invalid")
       render :two_factor, status: :unprocessable_entity
@@ -121,9 +137,13 @@ class SessionsController < ApplicationController
     session.delete(:magic_link_email)
     clear_pending_two_factor
     if user.two_factor_active?
-      session[:pending_2fa_user_id] = user.id
-      session[:pending_2fa_at] = Time.current.to_i
-      redirect_to sign_in_two_factor_path, status: :see_other
+      if user.two_factor_locked?
+        redirect_to sign_in_path, alert: t("sessions.two_factor_locked"), status: :see_other
+      else
+        session[:pending_2fa_user_id] = user.id
+        session[:pending_2fa_at] = Time.current.to_i
+        redirect_to sign_in_two_factor_path, status: :see_other
+      end
     else
       session[:user_id] = user.id
       if user.two_factor_setup_required?

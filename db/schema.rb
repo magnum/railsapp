@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_153000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_170100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -225,7 +225,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_153000) do
     t.string "magic_link_digest"
     t.datetime "magic_link_sent_at"
     t.datetime "otp_enabled_at"
+    t.integer "otp_failed_attempts", default: 0, null: false
     t.datetime "otp_last_used_at"
+    t.datetime "otp_locked_until"
     t.text "otp_pending_secret_ciphertext"
     t.text "otp_secret_ciphertext"
     t.string "password_digest"

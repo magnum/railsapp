@@ -24,6 +24,17 @@ module Users
     end
 
     def destroy
+      if @user.two_factor_locked?
+        redirect_to @user, alert: t("users.two_factor.locked"), status: :see_other
+        return
+      end
+
+      unless @user.authenticate_two_factor!(params[:otp_code])
+        alert = @user.register_two_factor_failure! ? t("users.two_factor.locked") : t("users.two_factor.disable_invalid")
+        redirect_to @user, alert: alert, status: :see_other
+        return
+      end
+
       @user.disable_two_factor!
       session.delete(:two_factor_backup_codes)
       redirect_to @user, notice: t("users.two_factor.disabled"), status: :see_other

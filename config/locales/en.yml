@@ -100,6 +100,7 @@ en:
     two_factor_code: "Code"
     two_factor_invalid: "That code is invalid."
     two_factor_expired: "The sign-in attempt expired. Sign in again."
+    two_factor_locked: "Too many incorrect codes. Wait 15 minutes, then sign in again."
     no_account: "Don't have an account?"
 
   test_email:
@@ -197,7 +198,11 @@ en:
       download: "Download backup-codes.txt"
       saved: "I have saved the codes"
       disable: "Remove code"
+      disable_help: "Enter a current authenticator code. If you no longer have the app, enter a backup code: it is used once and then two-factor authentication is removed. Without either, this account stays protected."
+      disable_code: "Authenticator or backup code"
+      disable_invalid: "That code is invalid. Two-factor authentication is still on."
       disable_confirm: "Remove two-factor authentication from this account?"
+      locked: "Too many incorrect codes. Wait 15 minutes before trying again."
       backup_codes_unavailable: "Those backup codes are no longer available."
     pass_keys:
       title: "Passkeys"
