@@ -3,7 +3,7 @@
     <%= t("sessions.sign_in") %>
   </h1>
 
-  <%= form_with url: sign_in_path, method: :post, local: true, class: "space-y-4" do |f| %>
+  <%= form_with url: sign_in_path, method: :post, data: { turbo: false }, class: "space-y-4" do |f| %>
     <div>
       <%= f.label :email, t("registrations.email"), class: "block text-base font-medium text-gray-700 mb-1" %>
       <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500" %>
@@ -13,6 +13,9 @@
       <%= f.password_field :password, autocomplete: "current-password", required: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500" %>
     </div>
     <%= f.submit t("sessions.sign_in"), class: "btn-primary w-full" %>
+    <% if email_magic_link_allowed? %>
+      <%= f.submit t("sessions.email_magic_link"), name: "magic_link", formnovalidate: true, class: "btn-default w-full" %>
+    <% end %>
   <% end %>
 
   <% if google_oauth_configured? %>

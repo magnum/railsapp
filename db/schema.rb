@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_125300) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_144500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -199,12 +199,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_125300) do
     t.string "email", null: false
     t.string "firstname"
     t.string "lastname"
+    t.string "magic_code_digest"
+    t.string "magic_link_digest"
+    t.datetime "magic_link_sent_at"
     t.string "password_digest"
     t.string "provider"
     t.string "uid"
     t.datetime "updated_at", null: false
     t.bigint "workspace_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["magic_code_digest"], name: "index_users_on_magic_code_digest", unique: true, where: "(magic_code_digest IS NOT NULL)"
+    t.index ["magic_link_digest"], name: "index_users_on_magic_link_digest", unique: true, where: "(magic_link_digest IS NOT NULL)"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true, where: "((provider IS NOT NULL) AND (uid IS NOT NULL))"
     t.index ["workspace_id"], name: "index_users_on_workspace_id"
   end

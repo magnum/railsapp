@@ -63,7 +63,41 @@ it:
     oauth_failure: "Autenticazione con Google fallita."
     or_continue: "Oppure continua con"
     connect_google: "Connetti con Google"
+    email_magic_link: "Inviami un link di accesso"
+    magic_link_sent: "Se esiste un account per questa email, abbiamo inviato un link e un codice di accesso."
+    magic_link_invalid: "Il link di accesso non è valido oppure è scaduto."
+    magic_link_unavailable: "I link di accesso non sono disponibili."
+    magic_link_email_required: "Inserisci l'email per ricevere il link di accesso."
+    magic_link_prompt_title: "Controlla la tua email"
+    magic_link_prompt_intro: "Se esiste un account per %{email}, ti abbiamo inviato un'email. Puoi accedere in uno di questi modi:"
+    magic_link_prompt_intro_generic: "Se esiste un account per questa email, ti abbiamo inviato un'email. Puoi accedere in uno di questi modi:"
+    magic_link_prompt_link: "Apri l'email e clicca il link di accesso."
+    magic_link_prompt_code: "Oppure copia il codice dall'email e incollalo qui sotto."
+    magic_code: "Codice"
+    magic_code_invalid: "Il codice non è valido oppure è scaduto."
+    back_to_sign_in: "Torna all'accesso"
     no_account: "Non hai un account?"
+
+  test_email:
+    title: "Email di prova"
+    email_to: "Destinatario"
+    text: "Testo"
+    send: "Invia"
+    confirm: "Inviare questa email?"
+    invalid: "Inserisci un indirizzo email valido e un testo."
+    sent: "Email inviata a %{email}."
+    failed: "Invio non riuscito: %{message}"
+
+  test_mailer:
+    subject: "Email di prova da %{app}"
+
+  user_mailer:
+    magic_link:
+      subject: "Accedi a %{app}"
+      greeting: "Ciao %{name},"
+      body: "Usa il link qui sotto, oppure copia il codice e incollalo nella pagina di accesso. Entrambi scadono tra 15 minuti e si possono usare una sola volta."
+      link: "Accedi"
+      code_label: "Oppure copia questo codice:"
 
   activerecord:
     models:

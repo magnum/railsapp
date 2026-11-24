@@ -1,4 +1,9 @@
+require "digest"
+
 class User < ApplicationRecord
+  MAGIC_LINK_TTL = 15.minutes
+  MAGIC_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+  MAGIC_CODE_LENGTH = 8
   include Workspaceable
   include ApiKeyable
   include Plannable
@@ -66,6 +71,61 @@ class User < ApplicationRecord
     auth.info.last_name.presence || auth.info.name&.split&.last || "Name"
   end
   private_class_method :omniauth_lastname
+
+  def self.email_magic_link_allowed?
+    Settings.auth.allow_email_magic_link
+  end
+
+  def send_magic_link
+    return unless self.class.email_magic_link_allowed?
+
+    raw = SecureRandom.hex(32)
+    code = self.class.generate_magic_code
+    update_columns(
+      magic_link_digest: Digest::SHA256.hexdigest(raw),
+      magic_code_digest: Digest::SHA256.hexdigest(code),
+      magic_link_sent_at: Time.current,
+      updated_at: Time.current
+    )
+    UserMailer.magic_link(self, raw, self.class.format_magic_code(code)).deliver_now
+  end
+
+  def self.consume_magic_link(token)
+    consume_magic_secret(:magic_link_digest, token.to_s)
+  end
+
+  def self.consume_magic_code(code)
+    consume_magic_secret(:magic_code_digest, normalize_magic_code(code))
+  end
+
+  def self.generate_magic_code
+    Array.new(MAGIC_CODE_LENGTH) { MAGIC_CODE_ALPHABET[SecureRandom.random_number(MAGIC_CODE_ALPHABET.length)] }.join
+  end
+
+  def self.format_magic_code(code)
+    "#{code[0, 4]}-#{code[4, 4]}"
+  end
+
+  def self.normalize_magic_code(code)
+    code.to_s.upcase.gsub(/[^A-Z0-9]/, "")
+  end
+
+  def self.consume_magic_secret(column, secret)
+    return if secret.blank? || !email_magic_link_allowed?
+
+    user = find_by(column => Digest::SHA256.hexdigest(secret))
+    return unless user
+
+    fresh = user.magic_link_sent_at.present? && user.magic_link_sent_at >= MAGIC_LINK_TTL.ago
+    user.update_columns(
+      magic_link_digest: nil,
+      magic_code_digest: nil,
+      magic_link_sent_at: nil,
+      updated_at: Time.current
+    )
+    user if fresh
+  end
+  private_class_method :consume_magic_secret
 
   def google_connected?
     provider == "google_oauth2"

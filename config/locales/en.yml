@@ -80,7 +80,41 @@ en:
     oauth_failure: "Authentication with Google failed."
     or_continue: "Or continue with"
     connect_google: "Connect with Google"
+    email_magic_link: "Email me a sign-in link"
+    magic_link_sent: "If an account exists for that email, we sent a sign-in link and a code."
+    magic_link_invalid: "That sign-in link is invalid or has expired."
+    magic_link_unavailable: "Sign-in links are not available."
+    magic_link_email_required: "Enter your email to receive a sign-in link."
+    magic_link_prompt_title: "Check your email"
+    magic_link_prompt_intro: "If an account exists for %{email}, we sent you an email. Sign in in either of these ways:"
+    magic_link_prompt_intro_generic: "If an account exists for that email, we sent you an email. Sign in in either of these ways:"
+    magic_link_prompt_link: "Open the email and click the sign-in link."
+    magic_link_prompt_code: "Or copy the code from the email and paste it below."
+    magic_code: "Code"
+    magic_code_invalid: "That code is invalid or has expired."
+    back_to_sign_in: "Back to sign in"
     no_account: "Don't have an account?"
+
+  test_email:
+    title: "Test email"
+    email_to: "Recipient"
+    text: "Text"
+    send: "Send"
+    confirm: "Send this email?"
+    invalid: "Enter a valid email address and some text."
+    sent: "Email sent to %{email}."
+    failed: "Delivery failed: %{message}"
+
+  test_mailer:
+    subject: "Test email from %{app}"
+
+  user_mailer:
+    magic_link:
+      subject: "Sign in to %{app}"
+      greeting: "Hello %{name},"
+      body: "Use the link below, or copy the code and paste it on the sign-in page. Either one expires in 15 minutes and can be used once."
+      link: "Sign in"
+      code_label: "Or copy this code:"
 
   activerecord:
     models:

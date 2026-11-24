@@ -1,6 +1,11 @@
 module ApplicationHelper
+  def email_magic_link_allowed?
+    User.email_magic_link_allowed?
+  end
+
   def google_oauth_configured?
-    ENV["GOOGLE_CLIENT_ID"].present? &&
+    Settings.auth.allow_connect_google &&
+      ENV["GOOGLE_CLIENT_ID"].present? &&
       ENV["GOOGLE_CLIENT_SECRET"].present?
   end
 

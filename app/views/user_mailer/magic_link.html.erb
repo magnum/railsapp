@@ -1,0 +1,5 @@
+<p><%= t("user_mailer.magic_link.greeting", name: @user.firstname) %></p>
+<p><%= t("user_mailer.magic_link.body") %></p>
+<p><%= link_to t("user_mailer.magic_link.link"), @url %></p>
+<p><%= t("user_mailer.magic_link.code_label") %></p>
+<p style="font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 24px; letter-spacing: 0.12em;"><%= @code %></p>

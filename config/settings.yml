@@ -1,2 +1,8 @@
 app:
   name: "RailsApp"
+  email: test@m6i.it
+
+auth:
+  allow_connect_google: true
+  allow_email_magic_link: true
+  2fa_required: true

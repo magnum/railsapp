@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
+  get "test/email", to: "test/emails#show", as: :test_email
+  post "test/email", to: "test/emails#create"
+
   concern :apiable do
     get "test", to: "test#index"
     # resources :documents, only: [:index, :show, :create]
@@ -37,7 +40,12 @@ Rails.application.routes.draw do
   # Auth (outside locale scope — session drives I18n, like flycal)
   get "sign_in", to: "sessions#new", as: :sign_in
   post "sign_in", to: "sessions#create"
+  post "sign_in/magic_link", to: "sessions#create_magic_link", as: :sign_in_magic_link
+  get "sign_in/magic_link", to: "sessions#magic_link_prompt", as: :sign_in_magic_link_prompt
+  post "sign_in/magic_link/code", to: "sessions#consume_magic_code", as: :sign_in_magic_code
+  get "sign_in/magic_link/:token", to: "sessions#consume_magic_link", as: :consume_sign_in_magic_link
   delete "sign_out", to: "sessions#destroy", as: :sign_out
+
   post "select_workspace", to: "select_workspace#create"
   get "auth/failure", to: "sessions#failure"
   get "auth/:provider/callback", to: "sessions#create"
