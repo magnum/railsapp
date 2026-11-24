@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_144500) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -193,6 +193,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_144500) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "user_backup_codes", force: :cascade do |t|
+    t.string "code_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "code_digest"], name: "index_user_backup_codes_on_user_id_and_code_digest", unique: true
+    t.index ["user_id"], name: "index_user_backup_codes_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "avatar_url"
     t.datetime "created_at", null: false
@@ -202,6 +211,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_144500) do
     t.string "magic_code_digest"
     t.string "magic_link_digest"
     t.datetime "magic_link_sent_at"
+    t.datetime "otp_enabled_at"
+    t.datetime "otp_last_used_at"
+    t.text "otp_pending_secret_ciphertext"
+    t.text "otp_secret_ciphertext"
     t.string "password_digest"
     t.string "provider"
     t.string "uid"
@@ -262,6 +275,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_144500) do
   add_foreign_key "plans", "workspaces"
   add_foreign_key "static_pages", "workspaces"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "user_backup_codes", "users"
   add_foreign_key "users", "workspaces"
   add_foreign_key "webhooks", "workspaces"
   add_foreign_key "workspaces", "users"

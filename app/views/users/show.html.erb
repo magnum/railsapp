@@ -49,6 +49,10 @@
           <dd class="mt-1 text-base text-gray-900"><%= @user.updated_at.strftime("%d/%m/%Y %H:%M") %></dd>
         </div>
       </dl>
+
+      <% if policy(@user).manage_two_factor? %>
+        <%= render "users/two_factor", user: @user, backup_codes: @backup_codes %>
+      <% end %>
     </div>
   </div>
 </div>

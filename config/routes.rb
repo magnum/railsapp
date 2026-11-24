@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   # Auth (outside locale scope — session drives I18n, like flycal)
   get "sign_in", to: "sessions#new", as: :sign_in
   post "sign_in", to: "sessions#create"
+  get "sign_in/two_factor", to: "sessions#two_factor", as: :sign_in_two_factor
+  post "sign_in/two_factor", to: "sessions#create_two_factor"
   post "sign_in/magic_link", to: "sessions#create_magic_link", as: :sign_in_magic_link
   get "sign_in/magic_link", to: "sessions#magic_link_prompt", as: :sign_in_magic_link_prompt
   post "sign_in/magic_link/code", to: "sessions#consume_magic_code", as: :sign_in_magic_code
@@ -61,7 +63,13 @@ Rails.application.routes.draw do
   get "invitations/consume/:code", to: "invitations#consume", as: :invitation_consume_with_code
   post "invitations/consume", to: "invitations#consume"
 
-  resources :users, only: [ :index, :show, :edit, :update ]
+  resources :users, only: [ :index, :show, :edit, :update ] do
+    resource :two_factor, only: [ :create, :destroy ], controller: "users/two_factors" do
+      post :confirm
+      get :backup_codes
+      delete :backup_codes, action: :dismiss_backup_codes
+    end
+  end
   post "bookmarks/toggle", to: "bookmarks#toggle", as: :toggle_bookmark
 
   namespace :api do

@@ -188,6 +188,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:user_id]
   end
 
+  test "a magic link for a two-factor account stops at the code prompt" do
+    user = users(:one)
+    user.otp_secret = ROTP::Base32.random
+    user.otp_enabled_at = Time.current
+    user.save!(validate: false)
+
+    with_email_magic_link(true) do
+      post sign_in_magic_link_path, params: { email: user.email }
+      get consume_sign_in_magic_link_path(magic_link_token)
+    end
+
+    assert_redirected_to sign_in_two_factor_path
+    assert_nil session[:user_id]
+  end
+
   private
 
   def magic_link_body

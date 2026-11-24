@@ -8,6 +8,7 @@ class User < ApplicationRecord
   include ApiKeyable
   include Plannable
   include Webhookable
+  include TwoFactorAuthenticatable
 
   has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
   has_many :bookmarks, dependent: :destroy

@@ -8,3 +8,15 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+dialog.two-factor-dialog {
+  margin: auto;
+  border: 0;
+  padding: 0;
+  width: calc(100% - 2rem);
+  max-width: 28rem;
+}
+
+dialog.two-factor-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}

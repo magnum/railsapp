@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   include Authentication
   include InvitationProtected
 
-  before_action :redirect_if_signed_in, only: [:new, :create, :create_magic_link, :magic_link_prompt, :consume_magic_code]
+  before_action :redirect_if_signed_in, only: [:new, :create, :create_magic_link, :magic_link_prompt, :consume_magic_code, :two_factor, :create_two_factor]
 
   def new
   end
@@ -75,12 +75,64 @@ class SessionsController < ApplicationController
     end
   end
 
+  def two_factor
+    @user = pending_two_factor_user
+    return if @user
+
+    redirect_to sign_in_path, alert: t("sessions.two_factor_expired")
+  end
+
+  def create_two_factor
+    @user = pending_two_factor_user
+    if @user.nil?
+      redirect_to sign_in_path, alert: t("sessions.two_factor_expired")
+      return
+    end
+
+    if @user.authenticate_two_factor!(params[:otp_code])
+      clear_pending_two_factor
+      session[:user_id] = @user.id
+      redirect_to root_path, notice: t("sessions.signed_in"), status: :see_other
+    else
+      flash.now[:alert] = t("sessions.two_factor_invalid")
+      render :two_factor, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def sign_in_user(user)
     session.delete(:magic_link_email)
-    session[:user_id] = user.id
-    redirect_to root_path, notice: t("sessions.signed_in")
+    clear_pending_two_factor
+    if user.two_factor_active?
+      session[:pending_2fa_user_id] = user.id
+      session[:pending_2fa_at] = Time.current.to_i
+      redirect_to sign_in_two_factor_path, status: :see_other
+    else
+      session[:user_id] = user.id
+      redirect_to root_path, notice: t("sessions.signed_in"), status: :see_other
+    end
+  end
+
+  def pending_two_factor_user
+    return if session[:pending_2fa_user_id].blank?
+
+    started_at = Time.zone.at(session[:pending_2fa_at].to_i)
+    if started_at < 10.minutes.ago
+      clear_pending_two_factor
+      return
+    end
+
+    user = User.find_by(id: session[:pending_2fa_user_id])
+    return user if user&.two_factor_active?
+
+    clear_pending_two_factor
+    nil
+  end
+
+  def clear_pending_two_factor
+    session.delete(:pending_2fa_user_id)
+    session.delete(:pending_2fa_at)
   end
 
   def create_from_oauth
@@ -99,19 +151,17 @@ class SessionsController < ApplicationController
     end
 
     user = User.from_omniauth(auth, workspace: current_invitation&.workspace)
-    session[:user_id] = user.id
 
     invitation = current_invitation
     invitation.consume! if invitation&.may_consume? && existing_user.nil?
 
-    redirect_to root_path, notice: t("sessions.signed_in")
+    sign_in_user(user)
   end
 
   def create_from_password
     user = User.find_by(email: params[:email]&.downcase)
     if user&.authenticate(params[:password])
-      session[:user_id] = user.id
-      redirect_to root_path, notice: t("sessions.signed_in")
+      sign_in_user(user)
     else
       flash.now[:alert] = t("sessions.invalid_credentials")
       render :new, status: :unprocessable_entity

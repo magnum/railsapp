@@ -11,6 +11,7 @@ class UsersController < ApplicationController
 
   def show
     authorize @user
+    @backup_codes = backup_codes_for_current_user
   end
 
   def edit
@@ -35,6 +36,13 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def backup_codes_for_current_user
+    stored = session[:two_factor_backup_codes]
+    return unless stored.is_a?(Hash) && stored["user_id"].to_i == @user.id && @user == current_user
+
+    Array(stored["codes"]).presence
   end
 
   def user_params

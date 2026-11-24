@@ -29,6 +29,10 @@ class UserPolicy < ApplicationPolicy
     admin?
   end
 
+  def manage_two_factor?
+    user.present? && record == user && User.two_factor_available?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       user.admin? ? scope.all : scope.where(id: user.id)
