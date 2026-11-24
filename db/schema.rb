@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_153000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -112,6 +112,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_150000) do
     t.index ["parent_id", "ord"], name: "index_menu_items_on_parent_id_and_ord"
     t.index ["parent_id"], name: "index_menu_items_on_parent_id"
     t.index ["rgt"], name: "index_menu_items_on_rgt"
+  end
+
+  create_table "pass_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "external_id", null: false
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.text "public_key", null: false
+    t.integer "sign_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["external_id"], name: "index_pass_keys_on_external_id", unique: true
+    t.index ["user_id"], name: "index_pass_keys_on_user_id"
   end
 
   create_table "plan_types", force: :cascade do |t|
@@ -219,11 +232,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_150000) do
     t.string "provider"
     t.string "uid"
     t.datetime "updated_at", null: false
+    t.string "webauthn_id"
     t.bigint "workspace_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["magic_code_digest"], name: "index_users_on_magic_code_digest", unique: true, where: "(magic_code_digest IS NOT NULL)"
     t.index ["magic_link_digest"], name: "index_users_on_magic_link_digest", unique: true, where: "(magic_link_digest IS NOT NULL)"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true, where: "((provider IS NOT NULL) AND (uid IS NOT NULL))"
+    t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true, where: "(webauthn_id IS NOT NULL)"
     t.index ["workspace_id"], name: "index_users_on_workspace_id"
   end
 
@@ -270,6 +285,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_150000) do
   add_foreign_key "bookmarks", "users"
   add_foreign_key "invitations", "workspaces"
   add_foreign_key "menu_items", "menu_items", column: "parent_id"
+  add_foreign_key "pass_keys", "users"
   add_foreign_key "plans", "plan_types"
   add_foreign_key "plans", "users"
   add_foreign_key "plans", "workspaces"

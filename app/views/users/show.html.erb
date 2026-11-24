@@ -53,6 +53,10 @@
       <% if policy(@user).manage_two_factor? %>
         <%= render "users/two_factor", user: @user, backup_codes: @backup_codes %>
       <% end %>
+
+      <% if policy(@user).manage_pass_keys? %>
+        <%= render "users/pass_keys", user: @user %>
+      <% end %>
     </div>
   </div>
 </div>

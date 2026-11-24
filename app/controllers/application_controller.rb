@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  include RequireTwoFactorSetup
   include WithLocale
   include Pundit::Authorization
   include CurrentWorkspace

@@ -93,6 +93,8 @@ en:
     magic_code: "Code"
     magic_code_invalid: "That code is invalid or has expired."
     back_to_sign_in: "Back to sign in"
+    passkey: "Sign in with a passkey"
+    passkey_invalid: "That passkey could not be verified."
     two_factor_title: "Two-factor authentication"
     two_factor_prompt: "Enter the code from your authenticator app, or one of your backup codes."
     two_factor_code: "Code"
@@ -152,6 +154,10 @@ en:
           attributes:
             valid_to:
               valid_to_after_valid_from: "must be after valid from"
+        pass_key:
+          attributes:
+            base:
+              invalid_credential: "could not be verified. Create it again on this device."
 
   common:
     cancel: "Cancel"
@@ -174,6 +180,7 @@ en:
     two_factor:
       title: "Two-factor authentication"
       disabled_status: "A second factor is not required for your sign-in."
+      setup_required: "Add a second factor on this page before you can use the rest of the app. You can still sign out or edit this profile."
       enabled_status: "Sign-in asks for a code from your authenticator app or a backup code."
       create: "Create code"
       show_qr: "Show QR code"
@@ -192,6 +199,14 @@ en:
       disable: "Remove code"
       disable_confirm: "Remove two-factor authentication from this account?"
       backup_codes_unavailable: "Those backup codes are no longer available."
+    pass_keys:
+      title: "Passkeys"
+      intro: "Add a passkey for this device and give it a name. You can then sign in with it."
+      name: "Name"
+      add: "Add passkey"
+      save: "Save passkeys"
+      remove: "Remove"
+      failed: "The passkey could not be created. Try again."
 
   registrations:
     sign_up: "Sign up"

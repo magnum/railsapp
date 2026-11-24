@@ -30,7 +30,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def manage_two_factor?
-    user.present? && record == user && User.two_factor_available?
+    user.present? && record == user
+  end
+
+  def manage_pass_keys?
+    user.present? && record == user
   end
 
   class Scope < ApplicationPolicy::Scope

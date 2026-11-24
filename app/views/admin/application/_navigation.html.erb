@@ -36,7 +36,7 @@ as defined by the routes in the `admin/` namespace
               @current_workspace&.id
             ),
             disabled: !current_user.admin?,
-            class: "w-full rounded-md border border-gray-300 px-2 py-1 text-sm",
+            class: "w-full rounded-md border border-gray-300 px-2 py-1 ",
             onchange: ("this.form.requestSubmit()" if current_user.admin?) %>
     <% end %>
   </div>

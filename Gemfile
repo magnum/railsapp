@@ -101,3 +101,5 @@ gem "mission_control-jobs"
 gem "heroicon"
 gem "httparty"
 gem "lexxy", "~> 0.9.31"
+
+gem "webauthn", "~> 3.5"

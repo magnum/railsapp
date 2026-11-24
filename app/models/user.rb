@@ -13,6 +13,9 @@ class User < ApplicationRecord
   has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
   has_many :bookmarks, dependent: :destroy
   has_many :received_bookmarks, class_name: "Bookmark", as: :bookmarkable, dependent: :destroy
+  has_many :pass_keys, dependent: :destroy
+
+  accepts_nested_attributes_for :pass_keys, allow_destroy: true, reject_if: :blank_pass_key?
 
   rolify
   has_secure_password validations: false
@@ -134,6 +137,18 @@ class User < ApplicationRecord
 
   def full_name
     "#{firstname} #{lastname}".strip
+  end
+
+  def ensure_webauthn_id!
+    return webauthn_id if webauthn_id.present?
+
+    update_column(:webauthn_id, SecureRandom.urlsafe_base64(32))
+    webauthn_id
+  end
+
+  def blank_pass_key?(attributes)
+    attributes = attributes.to_h.with_indifferent_access
+    attributes[:id].blank? && attributes[:name].blank? && attributes[:credential].blank?
   end
 
   def admin?

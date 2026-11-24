@@ -11,5 +11,9 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    setup do
+      Settings.auth["2fa_required"] = false
+      Settings.auth["2fa_required_for_admin"] = false
+    end
   end
 end

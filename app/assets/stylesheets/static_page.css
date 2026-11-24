@@ -11,7 +11,7 @@
 
 .static-page__edit {
   color: var(--lexxy-color-text-subtle);
-  font-size: var(--lexxy-text-small);
+  font-size: var(--lexxy-all);
   font-weight: 500;
   text-decoration: none;
 }

@@ -87,17 +87,57 @@ module Users
       assert_nil @user.reload.otp_pending_secret
     end
 
-    test "the second factor is skipped when the setting is off" do
+    test "an enabled second factor is still requested when setup is not required" do
       sign_in_as(@user)
       enable_two_factor(@user)
       delete sign_out_path
 
-      with_two_factor(false) do
+      with_two_factor_flags(required: false, required_for_admin: false) do
         post sign_in_path, params: { email: @user.email, password: "password1" }
       end
 
-      assert_redirected_to root_path
-      assert_equal @user.id, session[:user_id]
+      assert_redirected_to sign_in_two_factor_path
+      assert_nil session[:user_id]
+    end
+
+    test "a user without two-factor is kept on their profile when it is required" do
+      with_two_factor_flags(required: true, required_for_admin: false) do
+        sign_in_as(@user)
+        assert_redirected_to user_path(@user)
+        follow_redirect!
+        assert_match "Add a second factor on this page", response.body
+
+        get root_path
+        assert_redirected_to user_path(@user)
+
+        get edit_user_path(@user)
+        assert_response :success
+
+        get user_path(@other)
+        assert_redirected_to user_path(@user)
+
+        get admin_root_path
+        assert_redirected_to user_path(@user)
+
+        delete sign_out_path
+        assert_redirected_to sign_in_path
+      end
+    end
+
+    test "only admins must set up two-factor when that setting is on" do
+      @user.add_role(:admin)
+
+      with_two_factor_flags(required: false, required_for_admin: true) do
+        sign_in_as(@user)
+        assert_redirected_to user_path(@user)
+
+        delete sign_out_path
+        sign_in_as(@other)
+        assert_redirected_to root_path
+
+        get root_path
+        assert_response :success
+      end
     end
 
     private
@@ -113,12 +153,15 @@ module Users
       assert_redirected_to user_path(user, two_factor: "backup")
     end
 
-    def with_two_factor(enabled)
-      previous = Settings.auth["2fa_required"]
-      Settings.auth["2fa_required"] = enabled
+    def with_two_factor_flags(required:, required_for_admin:)
+      previous_required = Settings.auth["2fa_required"]
+      previous_admin = Settings.auth["2fa_required_for_admin"]
+      Settings.auth["2fa_required"] = required
+      Settings.auth["2fa_required_for_admin"] = required_for_admin
       yield
     ensure
-      Settings.auth["2fa_required"] = previous
+      Settings.auth["2fa_required"] = previous_required
+      Settings.auth["2fa_required_for_admin"] = previous_admin
     end
   end
 end

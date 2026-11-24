@@ -13,6 +13,7 @@ module Admin
     include Administrate::Punditize
 
     include Authenticable
+    include RequireTwoFactorSetup
     include CurrentWorkspace
     before_action :administrate?
     before_action :set_active_storage_url_options

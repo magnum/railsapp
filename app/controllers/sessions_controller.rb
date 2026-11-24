@@ -3,8 +3,9 @@
 class SessionsController < ApplicationController
   include Authentication
   include InvitationProtected
+  include WebAuthnRelyingParty
 
-  before_action :redirect_if_signed_in, only: [:new, :create, :create_magic_link, :magic_link_prompt, :consume_magic_code, :two_factor, :create_two_factor]
+  before_action :redirect_if_signed_in, only: [:new, :create, :create_magic_link, :magic_link_prompt, :consume_magic_code, :two_factor, :create_two_factor, :passkey_options, :create_passkey]
 
   def new
   end
@@ -82,6 +83,21 @@ class SessionsController < ApplicationController
     redirect_to sign_in_path, alert: t("sessions.two_factor_expired")
   end
 
+  def passkey_options
+    authentication = relying_party.options_for_authentication(user_verification: "preferred")
+    session[:webauthn_authentication_challenge] = authentication.challenge
+    render json: authentication
+  end
+
+  def create_passkey
+    user = user_from_passkey
+    if user
+      sign_in_user(user)
+    else
+      redirect_to sign_in_path, alert: t("sessions.passkey_invalid"), status: :see_other
+    end
+  end
+
   def create_two_factor
     @user = pending_two_factor_user
     if @user.nil?
@@ -110,7 +126,11 @@ class SessionsController < ApplicationController
       redirect_to sign_in_two_factor_path, status: :see_other
     else
       session[:user_id] = user.id
-      redirect_to root_path, notice: t("sessions.signed_in"), status: :see_other
+      if user.two_factor_setup_required?
+        redirect_to user_path(user), alert: t("users.two_factor.setup_required"), status: :see_other
+      else
+        redirect_to root_path, notice: t("sessions.signed_in"), status: :see_other
+      end
     end
   end
 
@@ -133,6 +153,32 @@ class SessionsController < ApplicationController
   def clear_pending_two_factor
     session.delete(:pending_2fa_user_id)
     session.delete(:pending_2fa_at)
+  end
+
+  def user_from_passkey
+    challenge = session.delete(:webauthn_authentication_challenge)
+    return if challenge.blank?
+
+    raw = params[:credential]
+    raw = JSON.parse(raw) if raw.is_a?(String)
+    raw = raw.to_unsafe_h if raw.respond_to?(:to_unsafe_h)
+    webauthn_credential = WebAuthn::Credential.from_get(raw, relying_party: relying_party)
+    pass_key = PassKey.find_by(external_id: webauthn_credential.id)
+    unless pass_key
+      Rails.logger.warn("Passkey sign-in: no credential #{webauthn_credential.id}")
+      return
+    end
+
+    webauthn_credential.verify(
+      challenge,
+      public_key: pass_key.public_key,
+      sign_count: pass_key.sign_count
+    )
+    pass_key.update!(sign_count: webauthn_credential.sign_count, last_used_at: Time.current)
+    pass_key.user
+  rescue JSON::ParserError, WebAuthn::Error, ArgumentError, RuntimeError, NoMethodError, TypeError => error
+    Rails.logger.warn("Passkey sign-in failed: #{error.class}: #{error.message}")
+    nil
   end
 
   def create_from_oauth

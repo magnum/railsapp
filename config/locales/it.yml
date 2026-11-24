@@ -76,6 +76,8 @@ it:
     magic_code: "Codice"
     magic_code_invalid: "Il codice non è valido oppure è scaduto."
     back_to_sign_in: "Torna all'accesso"
+    passkey: "Accedi con una passkey"
+    passkey_invalid: "Questa passkey non può essere verificata."
     two_factor_title: "Autenticazione a due fattori"
     two_factor_prompt: "Inserisci il codice dell'app authenticator, oppure uno dei codici di backup."
     two_factor_code: "Codice"
@@ -135,6 +137,10 @@ it:
           attributes:
             valid_to:
               valid_to_after_valid_from: "deve essere successivo a 'Valido da'"
+        pass_key:
+          attributes:
+            base:
+              invalid_credential: "non può essere verificata. Creala di nuovo su questo dispositivo."
 
   common:
     cancel: "Annulla"
@@ -157,6 +163,7 @@ it:
     two_factor:
       title: "Autenticazione a due fattori"
       disabled_status: "Per il tuo accesso non è richiesto un secondo fattore."
+      setup_required: "Aggiungi un secondo fattore in questa pagina prima di usare il resto dell'app. Puoi comunque uscire o modificare questo profilo."
       enabled_status: "L'accesso chiede un codice dell'app authenticator oppure un codice di backup."
       create: "Crea codice"
       show_qr: "Mostra il QR code"
@@ -175,6 +182,14 @@ it:
       disable: "Rimuovi codice"
       disable_confirm: "Rimuovere l'autenticazione a due fattori da questo account?"
       backup_codes_unavailable: "Questi codici di backup non sono più disponibili."
+    pass_keys:
+      title: "Passkey"
+      intro: "Aggiungi una passkey per questo dispositivo e dalle un nome. Potrai usarla per accedere."
+      name: "Nome"
+      add: "Aggiungi passkey"
+      save: "Salva le passkey"
+      remove: "Rimuovi"
+      failed: "Non è stato possibile creare la passkey. Riprova."
 
   registrations:
     sign_up: "Registrati"

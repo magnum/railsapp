@@ -14,8 +14,16 @@ module TwoFactorAuthenticatable
   end
 
   class_methods do
-    def two_factor_available?
-      ActiveModel::Type::Boolean.new.cast(Settings.auth["2fa_required"])
+    def two_factor_required_for_all?
+      auth_flag("2fa_required")
+    end
+
+    def two_factor_required_for_admins?
+      auth_flag("2fa_required_for_admin")
+    end
+
+    def auth_flag(key)
+      ActiveModel::Type::Boolean.new.cast(Settings.auth[key])
     end
 
     def generate_backup_code
@@ -32,7 +40,15 @@ module TwoFactorAuthenticatable
   end
 
   def two_factor_active?
-    self.class.two_factor_available? && otp_enabled_at.present? && otp_secret.present?
+    otp_enabled_at.present? && otp_secret.present?
+  end
+
+  def two_factor_required?
+    self.class.two_factor_required_for_all? || (admin? && self.class.two_factor_required_for_admins?)
+  end
+
+  def two_factor_setup_required?
+    two_factor_required? && !two_factor_active?
   end
 
   def two_factor_pending?

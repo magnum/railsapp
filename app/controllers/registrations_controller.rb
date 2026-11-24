@@ -18,7 +18,11 @@ class RegistrationsController < ApplicationController
       session[:user_id] = @user.id
       invitation = current_invitation
       invitation.consume! if invitation&.may_consume?
-      redirect_to root_path, notice: t("registrations.created")
+      if @user.two_factor_setup_required?
+        redirect_to user_path(@user), notice: t("registrations.created"), alert: t("users.two_factor.setup_required")
+      else
+        redirect_to root_path, notice: t("registrations.created")
+      end
     else
       render :new, status: :unprocessable_entity
     end

@@ -5,4 +5,6 @@ app:
 auth:
   allow_connect_google: true
   allow_email_magic_link: true
-  2fa_required: true
+
+  2fa_required: false
+  2fa_required_for_admin: true

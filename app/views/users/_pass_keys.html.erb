@@ -1,0 +1,42 @@
+<section class="mt-8 border-t border-gray-200 pt-6">
+  <h3 class="text-lg font-semibold text-gray-900"><%= t("users.pass_keys.title") %></h3>
+  <p class="mt-2 text-base text-gray-700"><%= t("users.pass_keys.intro") %></p>
+
+  <%= form_with model: user, data: { turbo: false, controller: "passkey", passkey_options_url_value: options_user_pass_keys_path(user), passkey_error_value: t("users.pass_keys.failed") }, class: "mt-4 space-y-4" do |form| %>
+    <%= render "shared/error_messages", object: user %>
+
+    <div data-passkey-target="list" class="space-y-3">
+      <%= form.fields_for :pass_keys do |pass_key| %>
+        <%= pass_key.hidden_field :id %>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="min-w-0 flex-1">
+            <%= pass_key.text_field :name, required: true, placeholder: t("users.pass_keys.name"), aria: { label: t("users.pass_keys.name") }, class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500" %>
+          </div>
+          <label class="inline-flex items-center gap-2 text-gray-700">
+            <%= pass_key.check_box :_destroy, class: "rounded border-gray-300" %>
+            <%= t("users.pass_keys.remove") %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+
+    <% if user.pass_keys.any? %>
+      <%= form.submit t("users.pass_keys.save"), class: "btn-primary" %>
+    <% end %>
+
+    <div class="flex flex-wrap items-center gap-3 border-t border-gray-100 pt-4">
+      <div class="min-w-0 flex-1">
+        <input id="new-passkey-name" type="text" placeholder="<%= t("users.pass_keys.name") %>" aria-label="<%= t("users.pass_keys.name") %>" data-passkey-target="name" class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500">
+      </div>
+      <button type="button" class="btn-default" data-action="passkey#add"><%= t("users.pass_keys.add") %></button>
+    </div>
+    <p data-passkey-target="status" class=" text-red-700" aria-live="polite"></p>
+
+    <template data-passkey-target="template">
+      <%= form.fields_for :pass_keys, PassKey.new, child_index: "NEW_RECORD" do |pass_key| %>
+        <%= pass_key.hidden_field :name, data: { passkey_name: true } %>
+        <%= pass_key.hidden_field :credential, data: { passkey_credential: true } %>
+      <% end %>
+    </template>
+  <% end %>
+</section>

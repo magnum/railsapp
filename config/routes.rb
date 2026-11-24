@@ -42,6 +42,8 @@ Rails.application.routes.draw do
   post "sign_in", to: "sessions#create"
   get "sign_in/two_factor", to: "sessions#two_factor", as: :sign_in_two_factor
   post "sign_in/two_factor", to: "sessions#create_two_factor"
+  post "sign_in/passkey/options", to: "sessions#passkey_options", as: :sign_in_passkey_options
+  post "sign_in/passkey", to: "sessions#create_passkey", as: :sign_in_passkey
   post "sign_in/magic_link", to: "sessions#create_magic_link", as: :sign_in_magic_link
   get "sign_in/magic_link", to: "sessions#magic_link_prompt", as: :sign_in_magic_link_prompt
   post "sign_in/magic_link/code", to: "sessions#consume_magic_code", as: :sign_in_magic_code
@@ -68,6 +70,11 @@ Rails.application.routes.draw do
       post :confirm
       get :backup_codes
       delete :backup_codes, action: :dismiss_backup_codes
+    end
+    resources :pass_keys, only: [], controller: "users/pass_keys" do
+      collection do
+        post :options
+      end
     end
   end
   post "bookmarks/toggle", to: "bookmarks#toggle", as: :toggle_bookmark
