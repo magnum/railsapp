@@ -9,6 +9,11 @@ module ApplicationHelper
       ENV["GOOGLE_CLIENT_SECRET"].present?
   end
 
+  def microsoft_oauth_configured?
+    ENV["MICROSOFT_CLIENT_ID"].present? &&
+      ENV["MICROSOFT_CLIENT_SECRET"].present?
+  end
+
   def state_bg_color(state)
     case state.to_s
     when "created", "draft"

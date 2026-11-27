@@ -28,9 +28,10 @@ gem "bcrypt", "~> 3.1.7"
 gem "rotp"
 gem "rqrcode"
 
-# OmniAuth for Google OAuth
+# OmniAuth for Google and Microsoft sign-in
 gem "omniauth", "~> 2.1"
 gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-entra-id", "~> 3.1"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

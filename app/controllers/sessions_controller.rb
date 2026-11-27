@@ -202,11 +202,10 @@ class SessionsController < ApplicationController
   end
 
   def create_from_oauth
-    unless Settings.auth.allow_connect_google
+    auth = request.env["omniauth.auth"]
+    unless oauth_provider_allowed?(auth)
       redirect_to sign_in_path, alert: t("sessions.oauth_failure") and return
     end
-
-    auth = request.env["omniauth.auth"]
     existing_user = User.find_for_omniauth(auth)
 
     if existing_user.nil?
@@ -222,6 +221,17 @@ class SessionsController < ApplicationController
     invitation.consume! if invitation&.may_consume? && existing_user.nil?
 
     sign_in_user(user)
+  end
+
+  def oauth_provider_allowed?(auth)
+    case auth&.provider
+    when "google_oauth2"
+      Settings.auth.allow_connect_google
+    when "entra_id"
+      true
+    else
+      false
+    end
   end
 
   def create_from_password

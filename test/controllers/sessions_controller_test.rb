@@ -27,6 +27,51 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "google_oauth2", user.reload.provider
     assert_equal "google-uid-existing", user.uid
     assert_equal "MyString", user.firstname
+    assert user.identities.exists?(provider: "google_oauth2", uid: "google-uid-existing")
+  end
+
+  test "microsoft sign in on the same email keeps the google identity" do
+    user = users(:one)
+    user.update!(password: "password1", password_confirmation: "password1", provider: "google_oauth2", uid: "google-uid-existing")
+    user.identities.create!(provider: "google_oauth2", uid: "google-uid-existing")
+    auth = OmniAuth::AuthHash.new(
+      provider: "entra_id",
+      uid: "microsoft-uid-existing",
+      info: { email: user.email, first_name: "Ada", last_name: "Lovelace", name: "Ada Lovelace" }
+    )
+
+    assert_no_difference "User.count" do
+      get "/auth/entra_id/callback", env: { "omniauth.auth" => auth }
+    end
+
+    assert_redirected_to root_path
+    assert_equal user.id, session[:user_id]
+    user.reload
+    assert_equal "google_oauth2", user.provider
+    assert_equal "google-uid-existing", user.uid
+    assert user.authenticate("password1")
+    assert_equal [ "entra_id", "google_oauth2" ], user.identities.order(:provider).pluck(:provider)
+
+    delete sign_out_path
+    post sign_in_path, params: { email: user.email, password: "password1" }
+    assert_redirected_to root_path
+    assert_equal user.id, session[:user_id]
+  end
+
+  test "sign in page lists microsoft under google when both are configured" do
+    with_oauth_env(
+      "GOOGLE_CLIENT_ID" => "google-id",
+      "GOOGLE_CLIENT_SECRET" => "google-secret",
+      "MICROSOFT_CLIENT_ID" => "microsoft-id",
+      "MICROSOFT_CLIENT_SECRET" => "microsoft-secret"
+    ) do
+      get sign_in_path
+    end
+
+    assert_response :success
+    assert_select "a[href='/auth/google_oauth2']", text: /Google/
+    assert_select "a[href='/auth/entra_id']", text: /Microsoft/
+    assert_operator response.body.index("/auth/google_oauth2"), :<, response.body.index("/auth/entra_id")
   end
 
   test "shows the google connect command when allowed and configured" do
@@ -224,6 +269,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     yield
   ensure
     Settings.auth.allow_email_magic_link = previous
+  end
+
+  def with_oauth_env(values)
+    previous = values.keys.index_with { |key| ENV[key] }
+    previous_allowed = Settings.auth.allow_connect_google
+    Settings.auth.allow_connect_google = true
+    values.each { |key, value| ENV[key] = value }
+    yield
+  ensure
+    Settings.auth.allow_connect_google = previous_allowed
+    previous.each { |key, value| restore_env(key, value) }
   end
 
   def with_google_connect(allowed:, configured:)

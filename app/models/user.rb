@@ -12,6 +12,7 @@ class User < ApplicationRecord
 
   has_one :owned_workspace, class_name: "Workspace", inverse_of: :user, dependent: :restrict_with_exception
   has_many :bookmarks, dependent: :destroy
+  has_many :identities, class_name: "UserIdentity", dependent: :destroy
   has_many :received_bookmarks, class_name: "Bookmark", as: :bookmarkable, dependent: :destroy
   has_many :pass_keys, dependent: :destroy
 
@@ -30,41 +31,67 @@ class User < ApplicationRecord
   after_create :ensure_owned_workspace, :create_default_plan
 
   def self.find_for_omniauth(auth)
-    find_by(provider: auth.provider, uid: auth.uid) || find_by_omniauth_email(auth)
+    uid = auth.uid.to_s
+    UserIdentity.find_by(provider: auth.provider, uid: uid)&.user ||
+      find_by(provider: auth.provider, uid: uid) ||
+      find_by_omniauth_email(auth)
   end
 
   def self.from_omniauth(auth, workspace: nil)
     user = find_for_omniauth(auth) || new
-    previously_linked = user.persisted? && user.provider == auth.provider
+    uid = auth.uid.to_s
+    already_linked = user.persisted? && (
+      user.identities.exists?(provider: auth.provider, uid: uid) ||
+      (user.provider == auth.provider && user.uid == uid)
+    )
+
+    email = omniauth_email(auth)
 
     if user.new_record?
-      user.email = auth.info.email
+      user.email = email
       user.firstname = omniauth_firstname(auth)
       user.lastname = omniauth_lastname(auth)
+      user.provider = auth.provider
+      user.uid = uid
       user.workspace = workspace if workspace
-    elsif previously_linked
-      user.email = auth.info.email if auth.info.email.present?
+    elsif already_linked
+      user.email = email if email.present?
       user.firstname = omniauth_firstname(auth)
       user.lastname = omniauth_lastname(auth)
+    elsif user.provider.blank?
+      user.provider = auth.provider
+      user.uid = uid
     end
 
-    if auth.info.image.present? && (user.new_record? || previously_linked || user.avatar_url.blank?)
+    if auth.info.image.present? && (user.new_record? || already_linked || user.avatar_url.blank?)
       user.avatar_url = auth.info.image
     end
 
-    user.provider = auth.provider
-    user.uid = auth.uid
     user.save!
+    user.identities.find_or_create_by!(provider: auth.provider, uid: uid)
     user
   end
 
   def self.find_by_omniauth_email(auth)
-    email = auth.info.email.to_s.strip.downcase
+    email = omniauth_email(auth)
     return if email.blank?
 
     where("LOWER(email) = ?", email).first
   end
   private_class_method :find_by_omniauth_email
+
+  def self.omniauth_email(auth)
+    raw = auth.extra&.raw_info
+    preferred = raw["preferred_username"] if raw.respond_to?(:[])
+
+    [ auth.info.email, preferred ].each do |value|
+      email = value.to_s.strip.downcase
+      return email if email.match?(URI::MailTo::EMAIL_REGEXP)
+    end
+
+    nil
+  end
+  private_class_method :omniauth_email
 
   def self.omniauth_firstname(auth)
     auth.info.first_name.presence || auth.info.name&.split&.first || "User"
@@ -132,7 +159,7 @@ class User < ApplicationRecord
   private_class_method :consume_magic_secret
 
   def google_connected?
-    provider == "google_oauth2"
+    identities.exists?(provider: "google_oauth2") || provider == "google_oauth2"
   end
 
   def full_name
@@ -191,6 +218,8 @@ class User < ApplicationRecord
 
   def password_or_oauth
     return if password_digest.present? || (provider.present? && uid.present?)
+    return if persisted? && identities.exists?
+
     errors.add(:base, "Password can't be blank") if password.blank?
   end
 

@@ -44,6 +44,26 @@ namespace :railsapp do
     puts "Created admin user #{user.email}."
   end
 
+  desc "Merge two accounts. Keeps the first email:provider user and attaches the second. Example: bin/rails railsapp:merge_account_emails[ada@gmail.com:google,ada@outlook.com:microsoft]"
+  task :merge_account_emails, [ :email1, :email2 ] => :environment do |_task, args|
+    email1 = args[:email1].presence || ENV["EMAIL1"]
+    email2 = args[:email2].presence || ENV["EMAIL2"]
+    if email1.blank? || email2.blank?
+      abort "Usage: bin/rails railsapp:merge_account_emails[email1:provider,email2:provider]"
+    end
+
+    keeper_email, keeper_provider = AccountMerge.parse(email1)
+    source_email, source_provider = AccountMerge.parse(email2)
+    puts "Keep #{keeper_email} (#{keeper_provider})."
+    puts "Merge #{source_email} (#{source_provider}) into that user, then delete the second user."
+    print "Type yes to continue: "
+    answer = $stdin.gets.to_s.strip
+    abort "Aborted." unless answer.casecmp("yes").zero?
+
+    user = AccountMerge.call(email1, email2)
+    puts "Merged into user ##{user.id} (#{user.email}). Identities: #{user.identities.order(:provider).pluck(:provider).join(', ')}."
+  end
+
   namespace :workspaces do
     desc "Create a workspace for every user that does not have one"
     task check: :environment do

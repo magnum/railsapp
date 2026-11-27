@@ -63,6 +63,7 @@ it:
     oauth_failure: "Autenticazione con Google fallita."
     or_continue: "Oppure continua con"
     connect_google: "Connetti con Google"
+    connect_microsoft: "Connetti con Microsoft"
     email_magic_link: "Inviami un link di accesso"
     magic_link_sent: "Se esiste un account per questa email, abbiamo inviato un link e un codice di accesso."
     magic_link_invalid: "Il link di accesso non è valido oppure è scaduto."
@@ -206,6 +207,7 @@ it:
     password_confirmation: "Conferma password"
     or_continue: "Oppure continua con"
     connect_google: "Connetti con Google"
+    connect_microsoft: "Connetti con Microsoft"
     has_account: "Hai già un account?"
     errors_prohibited:
       one: "1 errore ha impedito il salvataggio dell'account:"

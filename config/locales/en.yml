@@ -80,6 +80,7 @@ en:
     oauth_failure: "Authentication with Google failed."
     or_continue: "Or continue with"
     connect_google: "Connect with Google"
+    connect_microsoft: "Connect with Microsoft"
     email_magic_link: "Email me a sign-in link"
     magic_link_sent: "If an account exists for that email, we sent a sign-in link and a code."
     magic_link_invalid: "That sign-in link is invalid or has expired."
@@ -223,6 +224,7 @@ en:
     password_confirmation: "Confirm password"
     or_continue: "Or continue with"
     connect_google: "Connect with Google"
+    connect_microsoft: "Connect with Microsoft"
     no_account: "Don't have an account?"
     has_account: "Already have an account?"
     errors_prohibited:
